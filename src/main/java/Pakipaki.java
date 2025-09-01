@@ -1,14 +1,25 @@
 public class Pakipaki {
-    public static void main(String[] args) {
-        final String horizontalLine = "____________________________________________________________";
-        final String botName = "PakiPaki";
+    private static final String BOTNAME = "PakiPaki";
+    private static final String HORIZONTAL_LINE = "____________________________________________________________";
 
-        System.out.println(horizontalLine);
-        System.out.println("Hello I am " + botName + ", your personal assistant ChatBot.");
+    public static void startMsg() {
+        System.out.println("Hello I am " + BOTNAME + ", your personal assistant ChatBot.");
         System.out.println("How can I help you today?");
-        System.out.println(horizontalLine);
-        System.out
-                .println("Thank you for chatting with me.\n" + "Goodbye, and I look forward to our next conversation!");
-        System.out.println(horizontalLine);
+    }
+
+    public static void endMsg() {
+        System.out.println("Thank you for chatting with me.\nGoodbye, and I look forward to our next conversation!");
+    }
+
+    public static void printHorzLine() {
+        System.out.println(HORIZONTAL_LINE);
+    }
+
+    public static void main(String[] args) {
+        printHorzLine();
+        startMsg();
+        printHorzLine();
+        endMsg();
+        printHorzLine();
     }
 }
