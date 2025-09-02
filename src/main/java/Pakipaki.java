@@ -13,13 +13,16 @@ public class Pakipaki {
     // print start message
     public static void startMsg() {
         printHorzLine();
-        System.out.println("Hello I am " + BOTNAME + ", your personal assistant ChatBot.");
-        System.out.println("Feel free to tell me your tasks, I am here to help keep track of them!");
-        System.out.println();
-        System.out.println("You can:");
-        System.out.println("1. Type your task to add it to the list.");
-        System.out.println("2. Type 'list' to see all your saved tasks.");
-        System.out.println("3. Type 'bye' to exit when you're done.");
+        String message = """
+                Hello I am %s, your personal assistant ChatBot.
+                Feel free to tell me your tasks, I am here to help keep track of them!
+
+                You can:
+                1. Type your task to add it to the list.
+                2. Type 'list' to see all your saved tasks.
+                3. Type 'bye' to exit when you're done.
+                """.formatted(BOTNAME);
+        System.out.println(message);
         printHorzLine();
     }
 
