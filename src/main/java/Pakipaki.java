@@ -30,9 +30,23 @@ public class Pakipaki {
         printHorzLine();
     }
 
+    // print items inside task list
+    private static void printTaskList(ArrayList<String> taskList) {
+        if (taskList.isEmpty()) {
+            System.out.println("   Your task list is currently empty. Add some tasks and come back to see them here!");
+        } else {
+            for (int i = 0; i < taskList.size(); i++) {
+                System.out.println("    " + (i + 1) + ". " + taskList.get(i));
+            }
+            System.out.println();
+        }
+    }
+
     // get user input and display them
-    // AI give suggestion to create Scanner outside of method for better better
-    // resource management
+    /*
+     * AI give suggestion to create Scanner outside of method
+     * for better resource management
+     */
     public static void handleUserInput(Scanner in) {
         String userInput;
         // arraylist to store user input dynamically
@@ -45,17 +59,7 @@ public class Pakipaki {
             userInput = in.nextLine();
 
             if (userInput.equalsIgnoreCase("list")) {
-                // check for 0 task
-                if (taskList.isEmpty()) {
-                    System.out.println(
-                            "   Your task list is currently empty. Add some tasks and come back to see them here!");
-                } else {
-                    // print all tasks list items
-                    for (int i = 0; i < taskList.size(); i++) {
-                        System.out.println("    " + (i + 1) + ". " + taskList.get(i));
-                    }
-                    System.out.println();
-                }
+                printTaskList(taskList);
 
             } else if (userInput.equalsIgnoreCase("bye")) {
                 // exit while loop and print goodbye message
@@ -64,6 +68,8 @@ public class Pakipaki {
             } else if (!userInput.isEmpty()) {
                 taskList.add(userInput);
                 System.out.println("Task added: " + userInput + "\n");
+            } else {
+                System.out.println("(You entered an empty input.)\n");
             }
         }
     }
