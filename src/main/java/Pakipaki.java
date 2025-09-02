@@ -14,12 +14,12 @@ public class Pakipaki {
     public static void startMsg() {
         printHorzLine();
         String message = """
-                Hello I am %s, your personal assistant ChatBot.
-                Feel free to tell me your tasks, I am here to help keep track of them!
+                Hello I am %s, your little assistant, here to help with your tasks
 
-                You can:
-                1. Type your task to add it to the list.
-                2. Type 'list' to see all your saved tasks.
+                Let's get things snapping:
+
+                1. Type your task and I'll snap it onto your list.
+                2. Type 'list' to hear all your tasks lined up.
                 3. Type 'bye' to exit when you're done.
                 """.formatted(BOTNAME);
         System.out.println(message);
@@ -29,15 +29,17 @@ public class Pakipaki {
     // print end message
     public static void endMsg() {
         printHorzLine();
-        System.out.println("Thank you for chatting with me.\nGoodbye, and I look forward to our next conversation!");
+        System.out.println("Thank you for chatting with me! Until next time, keep cracking and stay sharp!");
         printHorzLine();
     }
 
     // print items inside task list
     private static void printTaskList(ArrayList<String> taskList) {
         if (taskList.isEmpty()) {
-            System.out.println("   Your task list is currently empty. Add some tasks and come back to see them here!");
+            System.out.println(
+                    "   Your task list is empty, nothing snapped in yet! Add something and I'll keep it ready for you!");
         } else {
+            System.out.println("Here's what's on your task list so far:");
             for (int i = 0; i < taskList.size(); i++) {
                 System.out.println("    " + (i + 1) + ". " + taskList.get(i));
             }
@@ -58,7 +60,7 @@ public class Pakipaki {
         // loop for user input
         while (true) {
             System.out.println();
-            System.out.print("Input: ");
+            System.out.print("You want to: ");
             userInput = in.nextLine();
 
             if (userInput.equalsIgnoreCase("list")) {
@@ -70,9 +72,10 @@ public class Pakipaki {
                 break;
             } else if (!userInput.isEmpty()) {
                 taskList.add(userInput);
-                System.out.println("Task added: " + userInput + "\n");
+                System.out.println("Snap! \"" + userInput + "\" added to your task list.\n");
             } else {
-                System.out.println("(You entered an empty input.)\n");
+                System.out.println("(Oops! You didn't type anything. Go ahead, give me a task!)\n");
+                continue;
             }
         }
     }
