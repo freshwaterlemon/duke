@@ -19,7 +19,7 @@ public class Pakipaki {
                 Let's get things snapping:
 
                 1. Type your task and I'll snap it onto your list.
-                2. Type 'list' to hear all your tasks lined up.
+                2. Type 'list' to see all your tasks lined up.
                 3. Type 'bye' to exit when you're done.
                 4. Type 'mark ...' followed by the task you want to mark to mark it as done.
                 5. Type 'unmark ...' followed by the task you want to unmark to unmark it as done.
@@ -49,19 +49,55 @@ public class Pakipaki {
         }
     }
 
-    // add task to arraylist of task
+    // add task object to arraylist of task
     private static void addTask(String description, ArrayList<Task> taskList) {
         Task task = new Task(description);
         taskList.add(task);
         System.out.println("Snap! \"" + task.getDescription() + "\" added to your task list.\n");
     }
 
-    private static void handleMark(String toDoString, ArrayList<Task> taskList) {
-        // System.out.println(toDoString + "\n"); // test method call
+    // find if task is inside the tasklist arraylist
+    private static Task findTaskByDescription(String description, ArrayList<Task> taskList) {
+        for (Task task : taskList) {
+            if (task.getDescription().equalsIgnoreCase(description)) {
+                return task;
+            }
+        }
+        return null;
     }
 
+    // handle marking of task as done
+    private static void handleMark(String toDoString, ArrayList<Task> taskList) {
+        Task task = findTaskByDescription(toDoString, taskList);
+        if (task != null) {
+            // check if already mark as done
+            if (!task.getIsDone()) {
+                task.markAsDone();
+                System.out.println("Wokay! \"" + toDoString + "\" mark as done!\n");
+                System.out.println("    " + task + "\n");
+            } else {
+                System.out.println("Task \"" + toDoString + "\" is already marked as done.\n");
+            }
+        } else {
+            System.out.println(toDoString + " not found, create task before marking it done\n");
+        }
+    }
+
+    // handle unmarking of task as undone
     private static void handleUnmark(String toDoString, ArrayList<Task> taskList) {
-        // System.out.println(toDoString + "\n"); // test method call
+        Task task = findTaskByDescription(toDoString, taskList);
+        if (task != null) {
+            // check if already unmark
+            if (task.getIsDone()) {
+                task.markAsUndone();
+                System.out.println("Alright \"" + toDoString + "\" unmark.\n");
+                System.out.println("    " + task + "\n");
+            } else {
+                System.out.println("Task \"" + toDoString + "\" was already not marked as done.\n");
+            }
+        } else {
+            System.out.println(toDoString + " not found, create task before unmarking it\n");
+        }
     }
 
     // get user input and display them
@@ -71,21 +107,23 @@ public class Pakipaki {
      */
     public static void handleUserInput(Scanner in) {
         String userInput;
-        // arraylist to store user input dynamically
-        // ArrayList<String> taskList = new ArrayList<String>();
+        // arraylist of task object to store all user input for todo dynamically
         ArrayList<Task> taskList = new ArrayList<Task>();
         // loop for user input
         while (true) {
             System.out.println();
             System.out.print("You want to: ");
             userInput = in.nextLine();
+            userInput = userInput.trim();
 
             if (userInput.isEmpty()) {
                 System.out.println("(Oops! You didn't type anything. Go ahead, give me a task!)\n");
                 continue;
             }
 
+            // get the first work in the sentance
             String command = userInput.split(" ")[0].toLowerCase();
+            // get everything after first word if there are more after first word
             String toDoString = userInput.length() > command.length() ? userInput.substring(command.length()).trim()
                     : "";
 
@@ -110,28 +148,6 @@ public class Pakipaki {
                     addTask(userInput, taskList);
                     break;
             }
-            // if (userIn
-            // put.equalsIgnoreCase("list")) {
-            // printTaskList(taskList);
-
-            // } else if (userInput.equalsIgnoreCase("bye")) {
-            // // exit while-loop and print goodbye message
-            // endMsg();
-            // break;
-            // } else if (userInput.toLowerCase().startsWith("mark")) {
-            // // task.markAsDone();
-            // System.out.println("mark is working\n");
-            // } else if (userInput.toLowerCase().startsWith("unmark")) {
-            // // task.markAsDone();
-            // System.out.println("unmark is working\n");
-            // } else if (!userInput.isEmpty()) {
-            // // taskList.add(userInput);
-            // addTask(userInput, taskList);
-            // } else {
-            // System.out.println("(Oops! You didn't type anything. Go ahead, give me a
-            // task!)\n");
-            // continue;
-            // }
         }
     }
 
