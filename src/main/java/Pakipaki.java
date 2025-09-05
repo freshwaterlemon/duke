@@ -57,13 +57,24 @@ public class Pakipaki {
     }
 
     // find if task is inside the tasklist arraylist
-    private static Task findTaskByDescription(String description, ArrayList<Task> taskList, boolean doneStatus) {
-        for (Task task : taskList) {
-            // add in && task.getIsDone() == doneStatus to handle duplicate task
-            // user decide to do the same task again after it is done
-            // check isDone in task obj, continue if task is found but already mark as done
-            if (task.getDescription().equalsIgnoreCase(description) && task.getIsDone() == doneStatus) {
-                return task;
+    private static Task findTaskByDescription(String description, ArrayList<Task> taskList, boolean doneStatus,
+            boolean findFromEnd) {
+        // unmark from the end of list for newer task should be unmark first
+        if (findFromEnd) {
+            for (int i = taskList.size() - 1; i >= 0; i--) {
+                Task task = taskList.get(i);
+                if (task.getDescription().equalsIgnoreCase(description) && task.getIsDone() == doneStatus) {
+                    return task;
+                }
+            }
+        } else {
+            for (Task task : taskList) {
+                // add in && task.getIsDone() == doneStatus to handle duplicate task
+                // user decide to do the same task again after it is done
+                // check isDone in task obj, continue if task is found but already mark as done
+                if (task.getDescription().equalsIgnoreCase(description) && task.getIsDone() == doneStatus) {
+                    return task;
+                }
             }
         }
         return null;
@@ -71,17 +82,11 @@ public class Pakipaki {
 
     // handle marking of task as done
     private static void handleMark(String toDoString, ArrayList<Task> taskList) {
-        Task task = findTaskByDescription(toDoString, taskList, false);
+        Task task = findTaskByDescription(toDoString, taskList, false, false);
         if (task != null) {
-            // check if already mark as done
-            // if (!task.getIsDone()) {
             task.markAsDone();
             System.out.println("Wokay! \"" + toDoString + "\" mark as done!\n");
             System.out.println("    " + task + "\n");
-            // } else {
-            // System.out.println("Task \"" + toDoString + "\" is already marked as
-            // done.\n");
-            // }
         } else {
             System.out.println(toDoString + " not found or all matching tasks are already marked as done.\n");
         }
@@ -89,17 +94,11 @@ public class Pakipaki {
 
     // handle unmarking of task as undone
     private static void handleUnmark(String toDoString, ArrayList<Task> taskList) {
-        Task task = findTaskByDescription(toDoString, taskList, true);
+        Task task = findTaskByDescription(toDoString, taskList, true, true);
         if (task != null) {
-            // check if already unmark
-            // if (task.getIsDone()) {
             task.markAsUndone();
             System.out.println("Alright \"" + toDoString + "\" unmark.\n");
             System.out.println("    " + task + "\n");
-            // } else {
-            // System.out.println("Task \"" + toDoString + "\" was already not marked as
-            // done.\n");
-            // }
         } else {
             System.out.println(toDoString + " not found or all matching tasks are already unmarked.\n");
         }
