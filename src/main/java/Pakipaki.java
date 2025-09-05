@@ -59,22 +59,26 @@ public class Pakipaki {
     // find if task is inside the tasklist arraylist
     private static Task findTaskByDescription(String description, ArrayList<Task> taskList, boolean doneStatus,
             boolean findFromEnd) {
-        // unmark from the end of list for newer task should be unmark first
+        // unmark from the end of list as newer task should be unmark first
+        int startFrom, end, step;
+
         if (findFromEnd) {
-            for (int i = taskList.size() - 1; i >= 0; i--) {
-                Task task = taskList.get(i);
-                if (task.getDescription().equalsIgnoreCase(description) && task.getIsDone() == doneStatus) {
-                    return task;
-                }
-            }
+            startFrom = taskList.size() - 1;
+            end = -1;
+            step = -1;
         } else {
-            for (Task task : taskList) {
-                // add in && task.getIsDone() == doneStatus to handle duplicate task
-                // user decide to do the same task again after it is done
-                // check isDone in task obj, continue if task is found but already mark as done
-                if (task.getDescription().equalsIgnoreCase(description) && task.getIsDone() == doneStatus) {
-                    return task;
-                }
+            startFrom = 0;
+            end = taskList.size();
+            step = 1;
+        }
+
+        for (int i = startFrom; i != end; i += step) {
+            Task task = taskList.get(i);
+            // add in && task.getIsDone() == doneStatus to handle duplicate task
+            // user decide to do the same task again after it is done
+            // check isDone in task obj, continue if task is found but already mark as done
+            if (task.getDescription().equalsIgnoreCase(description) && task.getIsDone() == doneStatus) {
+                return task;
             }
         }
         return null;
@@ -86,7 +90,7 @@ public class Pakipaki {
         if (task != null) {
             task.markAsDone();
             System.out.println("Wokay! \"" + toDoString + "\" mark as done!\n");
-            System.out.println("    " + task + "\n");
+            System.out.println(" " + task + "\n");
         } else {
             System.out.println(toDoString + " not found or all matching tasks are already marked as done.\n");
         }
@@ -98,7 +102,7 @@ public class Pakipaki {
         if (task != null) {
             task.markAsUndone();
             System.out.println("Alright \"" + toDoString + "\" unmark.\n");
-            System.out.println("    " + task + "\n");
+            System.out.println(" " + task + "\n");
         } else {
             System.out.println(toDoString + " not found or all matching tasks are already unmarked.\n");
         }
