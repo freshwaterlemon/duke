@@ -1,7 +1,67 @@
-Hello from
- ____        _        
-|  _ \ _   _| | _____ 
-| | | | | | | |/ / _ \
-| |_| | |_| |   <  __/
-|____/ \__,_|_|\_\___|
+____________________________________________________________
+Hello I am PakiPaki, your little assistant, here to help with your tasks
 
+Let's get things snapping:
+
+1. Type your task and I'll snap it onto your list.
+2. Type 'list' to see all your tasks lined up.
+3. Type 'bye' to exit when you're done.
+4. Type 'mark ...' followed by the task you want to mark to mark it as done.
+5. Type 'unmark ...' followed by the task you want to unmark to unmark it as done.
+
+____________________________________________________________
+
+Snap! "buy book" added to your task list.
+
+
+Here's what's on your task list so far:
+    1. [ ] buy book
+
+
+Snap! "return book" added to your task list.
+
+
+Wokay! "buy book" mark as done!
+
+ [X] buy book
+
+
+Here's what's on your task list so far:
+    1. [X] buy book
+    2. [ ] return book
+
+
+Snap! "buy book" added to your task list.
+
+
+Wokay! "buy book" mark as done!
+
+ [X] buy book
+
+
+Here's what's on your task list so far:
+    1. [X] buy book
+    2. [ ] return book
+    3. [X] buy book
+
+
+buy book not found or all matching tasks are already marked as done.
+
+
+Alright "buy book" unmark.
+
+ [ ] buy book
+
+
+Here's what's on your task list so far:
+    1. [X] buy book
+    2. [ ] return book
+    3. [ ] buy book
+
+
+(Oops! You didn't type anything. Go ahead, give me a task!)
+
+
+____________________________________________________________
+Thank you for chatting with me! Until next time, keep cracking and stay sharp!
+____________________________________________________________
