@@ -30,8 +30,8 @@ public class Pakipaki {
 
     // print end message
     private static void endMsg() {
-        printHorzLine();
-        System.out.println("Thank you for chatting with me! Until next time, keep cracking and stay sharp!");
+        // printHorzLine();
+        System.out.println("Thank you for chatting with me! Until next time!");
         printHorzLine();
     }
 
@@ -39,40 +39,42 @@ public class Pakipaki {
     private static void printTaskList(ArrayList<Task> taskList) {
         if (taskList.isEmpty()) {
             System.out.println(
-                    "   Your task list is empty, nothing snapped in yet! Add something and I'll keep it ready for you!");
+                    "   Your task list is empty! Add something and I'll keep it ready for you!");
         } else {
-            System.out.println("Here's what's on your task list so far:");
+            System.out.println("    Here's what's on your task list so far:");
             for (int i = 0; i < taskList.size(); i++) {
-                System.out.println("    " + (i + 1) + ". " + taskList.get(i));
+                System.out.println("        " + (i + 1) + ". " + taskList.get(i));
             }
             System.out.println();
         }
     }
 
     // add task object to arraylist of task
-    private static void addTask(String description, ArrayList<Task> taskList) {
-        Task task = new Task(description);
-        taskList.add(task);
-        System.out.println("Snap! \"" + task.getDescription() + "\" added to your task list.\n");
-    }
+    // private static void addTask(String description, String scheduleItem,
+    // ArrayList<Task> taskList) {
+    // Task task = new Task(description, scheduleItem);
+    // taskList.add(task);
+    // System.out.println("Snap! \"" + task.getDescription() + "\" added to your
+    // task list.\n");
+    // }
 
     // find if task is inside the tasklist arraylist
     private static Task findTaskByDescription(String description, ArrayList<Task> taskList, boolean doneStatus,
             boolean findFromEnd) {
         // unmark from the end of list as newer task should be unmark first
-        int startFrom, end, step;
+        int startFrom, endAt, step;
 
         if (findFromEnd) {
             startFrom = taskList.size() - 1;
-            end = -1;
+            endAt = -1;
             step = -1;
         } else {
             startFrom = 0;
-            end = taskList.size();
+            endAt = taskList.size();
             step = 1;
         }
 
-        for (int i = startFrom; i != end; i += step) {
+        for (int i = startFrom; i != endAt; i += step) {
             Task task = taskList.get(i);
             // add in && task.getIsDone() == doneStatus to handle duplicate task
             // user decide to do the same task again after it is done
@@ -89,8 +91,8 @@ public class Pakipaki {
         Task task = findTaskByDescription(toDoString, taskList, false, false);
         if (task != null) {
             task.markAsDone();
-            System.out.println("Wokay! \"" + toDoString + "\" mark as done!\n");
-            System.out.println(" " + task + "\n");
+            System.out.println("    Wokay! \"" + toDoString + "\" mark as done!");
+            System.out.println("        " + task + "\n");
         } else {
             System.out.println(toDoString + " not found or all matching tasks are already marked as done.\n");
         }
@@ -101,11 +103,65 @@ public class Pakipaki {
         Task task = findTaskByDescription(toDoString, taskList, true, true);
         if (task != null) {
             task.markAsUndone();
-            System.out.println("Alright \"" + toDoString + "\" unmark.\n");
-            System.out.println(" " + task + "\n");
+            System.out.println("    Alright \"" + toDoString + "\" unmark.");
+            System.out.println("        " + task + "\n");
         } else {
             System.out.println(toDoString + " not found or all matching tasks are already unmarked.\n");
         }
+    }
+
+    // handle to do
+    private static void handleToDo(String description, String scheduleItem, ArrayList<Task> taskList) {
+        Task task = new Task(description, scheduleItem);
+        taskList.add(task);
+        System.out.println("    " + task.getDescription() + " added to your task list.");
+        System.out.println("        " + "[T][ ] " + task.getDescription());
+        System.out.println("    Now you have " + taskList.size() + " tasks in the list.\n");
+    }
+
+    // handle deadline
+    private static void handleDeadline(String description, String scheduleItem, ArrayList<Task> taskList) {
+        int findIndex = description.indexOf("/by");
+        if (findIndex != -1) {
+            String deadlineDescription = description.substring(0, findIndex).trim();
+            String deadlineTiming = description.substring(findIndex + 3).trim();
+            String formattedDeadlineDetails = deadlineDescription + " (by: " + deadlineTiming + ")";
+
+            Task task = new Task(formattedDeadlineDetails, scheduleItem);
+            taskList.add(task);
+            System.out.println("    " + task.getDescription() + " added to your task list.");
+            System.out.println("        " + "[D][ ] " + task.getDescription());
+            System.out.println("    Now you have " + taskList.size() + " tasks in the list.\n");
+        } else {
+            System.out.println(
+                    "Oops! The deadline detail is missing.\nPlease use the format: deadline <task> /by <date/time>");
+            return;
+        }
+
+    }
+
+    // handle event
+    private static void handleEvent(String description, String scheduleItem, ArrayList<Task> taskList) {
+        int findIndexFrom = description.indexOf("/from");
+        int findIndexTo = description.indexOf("/to");
+        if (findIndexFrom != -1 && findIndexTo != -1) {
+            String eventDescription = description.substring(0, findIndexFrom).trim();
+            String eventTimingFrom = description.substring(findIndexFrom + 5, findIndexTo).trim();
+            String eventTimingTo = description.substring(findIndexTo + 3).trim();
+            String formattedEventDetails = eventDescription + " (from: " + eventTimingFrom + " to: " + eventTimingTo
+                    + ")";
+
+            Task task = new Task(formattedEventDetails, scheduleItem);
+            taskList.add(task);
+            System.out.println("    " + task.getDescription() + " added to your task list.");
+            System.out.println("        " + "[E][ ] " + task.getDescription());
+            System.out.println("    Now you have " + taskList.size() + " tasks in the list.\n");
+        } else {
+            System.out.println(
+                    "Oops! The event detail is missing.\nPlease use the format: event <task> /from <date/time> /to <date/time>");
+            return;
+        }
+
     }
 
     // get user input and display them
@@ -120,12 +176,12 @@ public class Pakipaki {
         // loop for user input
         while (true) {
             System.out.println();
-            System.out.print("You want to: ");
+            // System.out.print("You want to: ");
             userInput = in.nextLine();
             userInput = userInput.trim();
 
             if (userInput.isEmpty()) {
-                System.out.println("(Oops! You didn't type anything. Go ahead, give me a task!)\n");
+                System.out.println("    (Oops! You didn't type anything. Go ahead, give me a task!)\n");
                 continue;
             }
 
@@ -152,8 +208,22 @@ public class Pakipaki {
                     handleUnmark(toDoString, taskList);
                     break;
 
+                case "todo":
+                    handleToDo(toDoString, command, taskList);
+                    break;
+
+                case "deadline":
+                    handleDeadline(toDoString, command, taskList);
+                    break;
+
+                case "event":
+                    handleEvent(toDoString, command, taskList);
+                    break;
+
                 default:
-                    addTask(userInput, taskList);
+                    // addTask(userInput, taskList);
+                    System.out.println(
+                            "   Failed! Include todo, deadline, or event in front  so that I can organize your schedule.");
                     break;
             }
         }
