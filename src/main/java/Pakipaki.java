@@ -128,7 +128,9 @@ public class Pakipaki {
         }
         String deadlineDescription = description.substring(0, findIndex).trim();
         String deadlineTiming = description.substring(findIndex + 3).trim();
-        addTask(new Deadline(deadlineDescription, deadlineTiming), taskList);
+        String formattedDeadlineDescription = deadlineDescription + " (by: " + deadlineTiming + ")";
+        // addTask(new Deadline(deadlineDescription, deadlineTiming), taskList);
+        addTask(new Deadline(formattedDeadlineDescription), taskList);
 
     }
 
@@ -145,7 +147,11 @@ public class Pakipaki {
         String eventDescription = description.substring(0, findIndexFrom).trim();
         String eventTimingFrom = description.substring(findIndexFrom + 5, findIndexTo).trim();
         String eventTimingTo = description.substring(findIndexTo + 3).trim();
-        addTask(new Event(eventDescription, eventTimingFrom, eventTimingTo), taskList);
+        String formattedEventDescription = eventDescription + " (from: " + eventTimingFrom + " to: " + eventTimingTo
+                + ")";
+        // addTask(new Event(eventDescription, eventTimingFrom, eventTimingTo),
+        // taskList);
+        addTask(new Event(formattedEventDescription), taskList);
     }
 
     // get user input and display them
@@ -170,9 +176,9 @@ public class Pakipaki {
                 String taskString = userInput.length() > command.length() ? userInput.substring(command.length()).trim()
                         : "";
 
-                // Check if command is one that doesn't need arguments
+                // check if command is one that doesn't need arguments
                 if (!(command.equals("list") || command.equals("bye"))) {
-                    // For all other commands, arguments must not be empty
+                    // for all other commands, everything after first word must not be empty
                     if (taskString.isEmpty()) {
                         System.out.println("    Details after '" + command + "' cannot be empty.");
                         continue;

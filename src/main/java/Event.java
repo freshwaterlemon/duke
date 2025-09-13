@@ -1,11 +1,7 @@
 public class Event extends Task {
-    protected String eventTimingFrom;
-    protected String eventTimingTo;
 
-    public Event(String eventDescription, String eventTimingFrom, String eventTimingTo) {
+    public Event(String eventDescription) {
         super(eventDescription);
-        this.eventTimingFrom = eventTimingFrom;
-        this.eventTimingTo = eventTimingTo;
     }
 
     public String getScheduleItem() {
@@ -14,8 +10,6 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        return "[E]" + "[" + getStatusIcon() + "] " + description + " (from: " + eventTimingFrom + " to: "
-                + eventTimingTo
-                + ")";
+        return "[E]" + "[" + getStatusIcon() + "] " + description;
     }
 }
