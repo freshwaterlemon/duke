@@ -16,7 +16,7 @@ public class Pakipaki {
                 7. Type 'bye' to exit the chat.
             """;
 
-    // print the horizontal decoration line
+    // print the horizontal decoration line for seperation
     private static void printHorzLine() {
         System.out.println(HORIZONTAL_LINE);
     }
@@ -35,12 +35,11 @@ public class Pakipaki {
 
     // print end message
     private static void endMsg() {
-        // printHorzLine();
         System.out.println("    Thank you for chatting with me! Until next time!");
         printHorzLine();
     }
 
-    // print items inside task list
+    // print items inside task list and display message if the list is empty.
     private static void printTaskList(ArrayList<Task> taskList) {
         if (taskList.isEmpty()) {
             System.out.println(
@@ -53,15 +52,6 @@ public class Pakipaki {
             System.out.println();
         }
     }
-
-    // add task object to arraylist of task
-    // private static void addTask(String description, String scheduleItem,
-    // ArrayList<Task> taskList) {
-    // Task task = new Task(description, scheduleItem);
-    // taskList.add(task);
-    // System.out.println("Snap! \"" + task.getDescription() + "\" added to your
-    // task list.\n");
-    // }
 
     // find if task is inside the tasklist arraylist
     private static Task findTaskByDescription(String description, ArrayList<Task> taskList, boolean doneStatus,
@@ -92,55 +82,53 @@ public class Pakipaki {
     }
 
     // handle marking of task as done
-    private static void handleMark(String toDoString, ArrayList<Task> taskList) {
-        Task task = findTaskByDescription(toDoString, taskList, false, false);
+    private static void handleMark(String taskString, ArrayList<Task> taskList) {
+        Task task = findTaskByDescription(taskString, taskList, false, false);
         if (task != null) {
             task.markAsDone();
-            System.out.println("    Wokay! \"" + toDoString + "\" mark as done!");
+            System.out.println("    Alright! \"" + taskString + "\" mark as done!");
             System.out.println("        " + task + "\n");
         } else {
-            System.out.println(toDoString + " not found or all matching tasks are already marked as done.\n");
+            System.out.println(taskString + " not found or all matching tasks are already marked as done.\n");
         }
     }
 
     // handle unmarking of task as undone
-    private static void handleUnmark(String toDoString, ArrayList<Task> taskList) {
-        Task task = findTaskByDescription(toDoString, taskList, true, true);
+    private static void handleUnmark(String taskString, ArrayList<Task> taskList) {
+        Task task = findTaskByDescription(taskString, taskList, true, true);
         if (task != null) {
             task.markAsUndone();
-            System.out.println("    Alright \"" + toDoString + "\" unmark.");
+            System.out.println("    Alright! \"" + taskString + "\" unmark.");
             System.out.println("        " + task + "\n");
         } else {
-            System.out.println("    " + toDoString + " not found or all matching tasks are already unmarked.\n");
+            System.out.println("    " + taskString + " not found or all matching tasks are already unmarked.\n");
         }
     }
 
-    // handle to do
-    private static void handleToDo(String description, ArrayList<Task> taskList) {
-        Task task = new Todo(description);
+    // add task object to arraylist of task and display confirmation message
+    private static void addTask(Task task, ArrayList<Task> taskList) {
         taskList.add(task);
         System.out.println("    Got it, task added to your task list.");
         System.out.println("        " + task.toString() + "\n");
         System.out.println("    Now you have " + taskList.size() + " tasks in the list.\n");
     }
 
+    // handle to do
+    private static void handleToDo(String description, ArrayList<Task> taskList) {
+        addTask(new Todo(description), taskList);
+    }
+
     // handle deadline
     private static void handleDeadline(String description, ArrayList<Task> taskList) {
         int findIndex = description.indexOf("/by");
-        if (findIndex != -1) {
-            String deadlineDescription = description.substring(0, findIndex).trim();
-            String deadlineTiming = description.substring(findIndex + 3).trim();
-
-            Task task = new Deadline(deadlineDescription, deadlineTiming);
-            taskList.add(task);
-            System.out.println("    Got it, task added to your task list.");
-            System.out.println("        " + task.toString() + "\n");
-            System.out.println("    Now you have " + taskList.size() + " tasks in the list.\n");
-        } else {
+        if (findIndex == -1) {
             System.out.println("    Oops! The deadline detail is missing");
             System.out.println("    Please use the format: deadline <task> /by <date/time>");
             return;
         }
+        String deadlineDescription = description.substring(0, findIndex).trim();
+        String deadlineTiming = description.substring(findIndex + 3).trim();
+        addTask(new Deadline(deadlineDescription, deadlineTiming), taskList);
 
     }
 
@@ -148,89 +136,90 @@ public class Pakipaki {
     private static void handleEvent(String description, ArrayList<Task> taskList) {
         int findIndexFrom = description.indexOf("/from");
         int findIndexTo = description.indexOf("/to");
-        if (findIndexFrom != -1 && findIndexTo != -1) {
-            String eventDescription = description.substring(0, findIndexFrom).trim();
-            String eventTimingFrom = description.substring(findIndexFrom + 5, findIndexTo).trim();
-            String eventTimingTo = description.substring(findIndexTo + 3).trim();
-
-            Task task = new Event(eventDescription, eventTimingFrom, eventTimingTo);
-            taskList.add(task);
-            System.out.println("    Got it, task added to your task list.");
-            System.out.println("        " + task.toString() + "\n");
-            System.out.println("    Now you have " + taskList.size() + " tasks in the list.\n");
-        } else {
-            System.out.println("    Oops! The deadline detail is missing");
+        // user must include both from and to
+        if (findIndexFrom == -1 || findIndexTo == -1 || findIndexFrom > findIndexTo) {
+            System.out.println("    Oops! The event detail is missing");
             System.out.println("    Please use the format: event <task> /from <date/time> /to <date/time>");
             return;
         }
-
+        String eventDescription = description.substring(0, findIndexFrom).trim();
+        String eventTimingFrom = description.substring(findIndexFrom + 5, findIndexTo).trim();
+        String eventTimingTo = description.substring(findIndexTo + 3).trim();
+        addTask(new Event(eventDescription, eventTimingFrom, eventTimingTo), taskList);
     }
 
     // get user input and display them
-    /*
-     * AI give suggestion to create Scanner outside of method
-     * for better resource management
-     */
     public static void handleUserInput(Scanner in) {
-        String userInput;
-        // arraylist of task object to store all user input for todo dynamically
+
+        // arraylist of task object to store all task dynamically
         ArrayList<Task> taskList = new ArrayList<Task>();
         // loop for user input
         while (true) {
-            System.out.println();
-            // System.out.print("You want to: ");
-            userInput = in.nextLine();
-            userInput = userInput.trim();
+            try {
+                System.out.println();
+                String userInput = in.nextLine().trim();
 
-            if (userInput.isEmpty()) {
-                System.out.println("    (Oops! You didn't type anything. Go ahead, give me a task!)\n");
-                continue;
-            }
+                if (userInput.isEmpty()) {
+                    System.out.println("    (Oops! You didn't type anything. Go ahead, give me a task!)\n");
+                    continue;
+                }
 
-            // get the first word in the sentance
-            String command = userInput.split(" ")[0].toLowerCase();
-            // get everything after first word if there are more after first word
-            String toDoString = userInput.length() > command.length() ? userInput.substring(command.length()).trim()
-                    : "";
+                // get the first word in the sentance
+                String command = userInput.split(" ")[0].toLowerCase();
+                // get everything after first word if there are more after first word
+                String taskString = userInput.length() > command.length() ? userInput.substring(command.length()).trim()
+                        : "";
 
-            switch (command) {
-                case "list":
-                    printTaskList(taskList);
-                    break;
+                // Check if command is one that doesn't need arguments
+                if (!(command.equals("list") || command.equals("bye"))) {
+                    // For all other commands, arguments must not be empty
+                    if (taskString.isEmpty()) {
+                        System.out.println("    Details after '" + command + "' cannot be empty.");
+                        continue;
+                    }
+                }
 
-                case "bye":
-                    endMsg();
-                    return;
+                switch (command) {
+                    case "list":
+                        printTaskList(taskList);
+                        break;
 
-                case "mark":
-                    handleMark(toDoString, taskList);
-                    break;
+                    case "bye":
+                        endMsg();
+                        return;
 
-                case "unmark":
-                    handleUnmark(toDoString, taskList);
-                    break;
+                    case "mark":
+                        handleMark(taskString, taskList);
+                        break;
 
-                case "todo":
-                    handleToDo(toDoString, taskList);
-                    break;
+                    case "unmark":
+                        handleUnmark(taskString, taskList);
+                        break;
 
-                case "deadline":
-                    handleDeadline(toDoString, taskList);
-                    break;
+                    case "todo":
+                        handleToDo(taskString, taskList);
+                        break;
 
-                case "event":
-                    handleEvent(toDoString, taskList);
-                    break;
+                    case "deadline":
+                        handleDeadline(taskString, taskList);
+                        break;
 
-                default:
-                    // addTask(userInput, taskList);
-                    String unknownCommandMsg = """
-                                Sorry, I do not quite get that.
+                    case "event":
+                        handleEvent(taskString, taskList);
+                        break;
 
-                                %s
-                            """.formatted(USERGUIDEMSG);
-                    System.out.println(unknownCommandMsg);
-                    break;
+                    default:
+                        String unknownCommandMsg = """
+                                    Sorry, I do not quite get that.
+
+                                    %s
+                                """.formatted(USERGUIDEMSG);
+                        System.out.println(unknownCommandMsg);
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("    Sorry, something went wrong processing your input. Please try again.");
+                System.out.println(e.getMessage());
             }
         }
     }
