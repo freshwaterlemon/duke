@@ -42,8 +42,7 @@ public class Pakipaki {
     // print items inside task list and display message if the list is empty.
     private static void printTaskList(ArrayList<Task> taskList) {
         if (taskList.isEmpty()) {
-            System.out.println(
-                    "   Your task list is empty! Add something and I'll keep it ready for you!");
+            System.out.println("    Your task list is empty! Add something and I'll keep it ready for you!");
         } else {
             System.out.println("    Here's what's on your task list so far: " + "(" + taskList.size() + " in total)");
             for (int i = 0; i < taskList.size(); i++) {
@@ -55,7 +54,7 @@ public class Pakipaki {
 
     // find if task is inside the tasklist arraylist
     private static Task findTaskByDescription(String description, ArrayList<Task> taskList, boolean doneStatus,
-            boolean findFromEnd) {
+            boolean findFromEnd) throws PakipakiException {
         // unmark from the end of list as newer task should be unmark first
         int startFrom, endAt, step;
 
@@ -78,30 +77,53 @@ public class Pakipaki {
                 return task;
             }
         }
-        return null;
+        // return null;
+        throw new PakipakiException(
+                "Task with description \"" + description + "\" not found.");
+
     }
 
     // handle marking of task as done
     private static void handleMark(String taskString, ArrayList<Task> taskList) {
-        Task task = findTaskByDescription(taskString, taskList, false, false);
-        if (task != null) {
+        // Task task = findTaskByDescription(taskString, taskList, false, false);
+        // if (task != null) {
+        // task.markAsDone();
+        // System.out.println(" Alright! \"" + taskString + "\" mark as done!");
+        // System.out.println(" " + task + "\n");
+        // } else {
+        // System.out.println("\"" + taskString + "\" not found or all matching tasks
+        // are already marked as done.\n");
+
+        // }
+        try {
+            Task task = findTaskByDescription(taskString, taskList, false, false);
             task.markAsDone();
             System.out.println("    Alright! \"" + taskString + "\" mark as done!");
             System.out.println("        " + task + "\n");
-        } else {
-            System.out.println(taskString + " not found or all matching tasks are already marked as done.\n");
+        } catch (PakipakiException e) {
+            System.out.println("    " + e.getMessage() + "\n");
         }
     }
 
     // handle unmarking of task as undone
     private static void handleUnmark(String taskString, ArrayList<Task> taskList) {
-        Task task = findTaskByDescription(taskString, taskList, true, true);
-        if (task != null) {
+        // Task task = findTaskByDescription(taskString, taskList, true, true);
+        // if (task != null) {
+        // task.markAsUndone();
+        // System.out.println(" Alright! \"" + taskString + "\" unmark.");
+        // System.out.println(" " + task + "\n");
+        // } else {
+        // System.out.println("\"" + taskString + "\" not found or all matching tasks
+        // are already unmarked.\n");
+
+        // }
+        try {
+            Task task = findTaskByDescription(taskString, taskList, true, true);
             task.markAsUndone();
             System.out.println("    Alright! \"" + taskString + "\" unmark.");
             System.out.println("        " + task + "\n");
-        } else {
-            System.out.println("    " + taskString + " not found or all matching tasks are already unmarked.\n");
+        } catch (PakipakiException e) {
+            System.out.println("    " + e.getMessage() + "\n");
         }
     }
 
@@ -129,7 +151,6 @@ public class Pakipaki {
         String deadlineDescription = description.substring(0, findIndex).trim();
         String deadlineTiming = description.substring(findIndex + 3).trim();
         String formattedDeadlineDescription = deadlineDescription + " (by: " + deadlineTiming + ")";
-        // addTask(new Deadline(deadlineDescription, deadlineTiming), taskList);
         addTask(new Deadline(formattedDeadlineDescription), taskList);
 
     }
@@ -149,9 +170,14 @@ public class Pakipaki {
         String eventTimingTo = description.substring(findIndexTo + 3).trim();
         String formattedEventDescription = eventDescription + " (from: " + eventTimingFrom + " to: " + eventTimingTo
                 + ")";
-        // addTask(new Event(eventDescription, eventTimingFrom, eventTimingTo),
-        // taskList);
         addTask(new Event(formattedEventDescription), taskList);
+    }
+
+    // check if details after valid command is missing
+    private static void validateCommandDetails(String command, String taskString) throws PakipakiException {
+        if (taskString.isEmpty()) {
+            throw new PakipakiException("Details after '" + command + "' cannot be empty.");
+        }
     }
 
     // get user input and display them
@@ -166,7 +192,8 @@ public class Pakipaki {
                 String userInput = in.nextLine().trim();
 
                 if (userInput.isEmpty()) {
-                    System.out.println("    (Oops! You didn't type anything. Go ahead, give me a task!)\n");
+
+                    System.out.println("    Oops! You didn't type anything. Go ahead, give me a task!\n");
                     continue;
                 }
 
@@ -176,14 +203,14 @@ public class Pakipaki {
                 String taskString = userInput.length() > command.length() ? userInput.substring(command.length()).trim()
                         : "";
 
-                // check if command is one that doesn't need arguments
-                if (!(command.equals("list") || command.equals("bye"))) {
-                    // for all other commands, everything after first word must not be empty
-                    if (taskString.isEmpty()) {
-                        System.out.println("    Details after '" + command + "' cannot be empty.");
-                        continue;
-                    }
-                }
+                // // check if command is one that doesn't need arguments
+                // if (!(command.equals("list") || command.equals("bye"))) {
+                // // for all other commands, everything after first word must not be empty
+                // if (taskString.isEmpty()) {
+                // System.out.println(" Details after '" + command + "' cannot be empty.");
+                // continue;
+                // }
+                // }
 
                 switch (command) {
                     case "list":
@@ -195,37 +222,44 @@ public class Pakipaki {
                         return;
 
                     case "mark":
+                        validateCommandDetails(command, taskString);
                         handleMark(taskString, taskList);
                         break;
 
                     case "unmark":
+                        validateCommandDetails(command, taskString);
                         handleUnmark(taskString, taskList);
                         break;
 
                     case "todo":
+                        validateCommandDetails(command, taskString);
                         handleToDo(taskString, taskList);
                         break;
 
                     case "deadline":
+                        validateCommandDetails(command, taskString);
                         handleDeadline(taskString, taskList);
                         break;
 
                     case "event":
+                        validateCommandDetails(command, taskString);
                         handleEvent(taskString, taskList);
                         break;
 
                     default:
                         String unknownCommandMsg = """
-                                    Sorry, I do not quite get that.
+                                Sorry, I do not quite get that.
 
                                     %s
                                 """.formatted(USERGUIDEMSG);
-                        System.out.println(unknownCommandMsg);
-                        break;
+                        // System.out.println(unknownCommandMsg);
+                        // break;
+                        throw new PakipakiException(unknownCommandMsg);
                 }
+            } catch (PakipakiException e) {
+                System.out.println("    " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("    Sorry, something went wrong processing your input. Please try again.");
-                System.out.println(e.getMessage());
+                System.out.println("    Something went wrong!: " + e.getMessage());
             }
         }
     }
