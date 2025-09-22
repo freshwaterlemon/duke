@@ -35,16 +35,17 @@ public class Pakipaki {
 
     // print end message
     private static void endMsg() {
-        System.out.println("    Thank you for chatting with me! Until next time!");
+        System.out.println(("Thank you for chatting with me! Until next time!").indent(4));
         printHorzLine();
     }
 
     // print items inside task list and display message if the list is empty.
     private static void printTaskList(ArrayList<Task> taskList) {
         if (taskList.isEmpty()) {
-            System.out.println("    Your task list is empty! Add something and I'll keep it ready for you!");
+            System.out.println(("Your task list is empty! Add something and I'll keep it ready for you!").indent(4));
         } else {
-            System.out.println("    Here's what's on your task list so far: " + "(" + taskList.size() + " in total)");
+            System.out.println(
+                    ("Here's what's on your task list so far: " + "(" + taskList.size() + " in total)").indent(4));
             for (int i = 0; i < taskList.size(); i++) {
                 System.out.println("        " + (i + 1) + ". " + taskList.get(i));
             }
@@ -83,56 +84,60 @@ public class Pakipaki {
 
     }
 
+    /*
+     * find if task is inside the tasklist arraylist using
+     * description or by using index
+     */
+    private static Task findTaskByDescription(String description, ArrayList<Task> taskList) throws PakipakiException {
+        try {
+            int taskIndex = Integer.parseInt(description) - 1; // Adjust for 1-based input
+            if (taskIndex < 0 || taskIndex >= taskList.size()) {
+                throw new PakipakiException("No task number: " + (taskIndex + 1));
+            }
+            return taskList.get(taskIndex);
+        } catch (NumberFormatException e) {
+            // no number provided, fall back to description search
+        }
+
+        for (Task task : taskList) {
+            if (task.getDescription().equalsIgnoreCase(description)) {
+                return task;
+            }
+        }
+
+        throw new PakipakiException("Task with description \"" + description + "\" not found.");
+    }
+
     // handle marking of task as done
     private static void handleMark(String taskString, ArrayList<Task> taskList) {
-        // Task task = findTaskByDescription(taskString, taskList, false, false);
-        // if (task != null) {
-        // task.markAsDone();
-        // System.out.println(" Alright! \"" + taskString + "\" mark as done!");
-        // System.out.println(" " + task + "\n");
-        // } else {
-        // System.out.println("\"" + taskString + "\" not found or all matching tasks
-        // are already marked as done.\n");
-
-        // }
         try {
             Task task = findTaskByDescription(taskString, taskList, false, false);
             task.markAsDone();
-            System.out.println("    Alright! \"" + taskString + "\" mark as done!");
-            System.out.println("        " + task + "\n");
+            System.out.println(("Alright! \"" + taskString + "\" mark as done!").indent(4));
+            System.out.println((task + "\n").indent(8));
         } catch (PakipakiException e) {
-            System.out.println("    " + e.getMessage() + "\n");
+            System.out.println((e.getMessage() + "\n").indent(4));
         }
     }
 
     // handle unmarking of task as undone
     private static void handleUnmark(String taskString, ArrayList<Task> taskList) {
-        // Task task = findTaskByDescription(taskString, taskList, true, true);
-        // if (task != null) {
-        // task.markAsUndone();
-        // System.out.println(" Alright! \"" + taskString + "\" unmark.");
-        // System.out.println(" " + task + "\n");
-        // } else {
-        // System.out.println("\"" + taskString + "\" not found or all matching tasks
-        // are already unmarked.\n");
-
-        // }
         try {
             Task task = findTaskByDescription(taskString, taskList, true, true);
             task.markAsUndone();
-            System.out.println("    Alright! \"" + taskString + "\" unmark.");
-            System.out.println("        " + task + "\n");
+            System.out.println(("Alright! \"" + taskString + "\" unmark.").indent(4));
+            System.out.println((task + "\n").indent(8));
         } catch (PakipakiException e) {
-            System.out.println("    " + e.getMessage() + "\n");
+            System.out.println((e.getMessage() + "\n").indent(4));
         }
     }
 
     // add task object to arraylist of task and display confirmation message
     private static void addTask(Task task, ArrayList<Task> taskList) {
         taskList.add(task);
-        System.out.println("    Got it, task added to your task list.");
-        System.out.println("        " + task.toString() + "\n");
-        System.out.println("    Now you have " + taskList.size() + " tasks in the list.\n");
+        System.out.println(("Got it, task added to your task list.").indent(4));
+        System.out.println((task.toString() + "\n").indent(8));
+        System.out.println(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
     }
 
     // handle to do
@@ -144,8 +149,8 @@ public class Pakipaki {
     private static void handleDeadline(String description, ArrayList<Task> taskList) {
         int findIndex = description.indexOf("/by");
         if (findIndex == -1) {
-            System.out.println("    Oops! The deadline detail is missing");
-            System.out.println("    Please use the format: deadline <task> /by <date/time>");
+            System.out.println(("Oops! The deadline detail is missing").indent(4));
+            System.out.println(("Please use the format: deadline <task> /by <date/time>").indent(4));
             return;
         }
         String deadlineDescription = description.substring(0, findIndex).trim();
@@ -161,8 +166,8 @@ public class Pakipaki {
         int findIndexTo = description.indexOf("/to");
         // user must include both from and to
         if (findIndexFrom == -1 || findIndexTo == -1 || findIndexFrom > findIndexTo) {
-            System.out.println("    Oops! The event detail is missing");
-            System.out.println("    Please use the format: event <task> /from <date/time> /to <date/time>");
+            System.out.println(("Oops! The event detail is missing").indent(4));
+            System.out.println(("Please use the format: event <task> /from <date/time> /to <date/time>").indent(4));
             return;
         }
         String eventDescription = description.substring(0, findIndexFrom).trim();
@@ -171,6 +176,20 @@ public class Pakipaki {
         String formattedEventDescription = eventDescription + " (from: " + eventTimingFrom + " to: " + eventTimingTo
                 + ")";
         addTask(new Event(formattedEventDescription), taskList);
+    }
+
+    // delete task object from arraylist of task and display confirmation message
+    private static void deleteTask(Task task, ArrayList<Task> taskList) {
+        taskList.remove(task);
+        System.out.println(("Got it, task removed from your task list.").indent(4));
+        System.out.println((task.toString() + "\n").indent(8));
+        System.out.println(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
+    }
+
+    // handle delete
+    private static void handleDelete(String description, ArrayList<Task> taskList) throws PakipakiException {
+        Task task = findTaskByDescription(description, taskList);
+        deleteTask(task, taskList);
     }
 
     // check if details after valid command is missing
@@ -192,8 +211,7 @@ public class Pakipaki {
                 String userInput = in.nextLine().trim();
 
                 if (userInput.isEmpty()) {
-
-                    System.out.println("    Oops! You didn't type anything. Go ahead, give me a task!\n");
+                    System.out.println(("Oops! You didn't type anything. Go ahead, give me a task!\n").indent(4));
                     continue;
                 }
 
@@ -202,15 +220,6 @@ public class Pakipaki {
                 // get everything after first word if there are more after first word
                 String taskString = userInput.length() > command.length() ? userInput.substring(command.length()).trim()
                         : "";
-
-                // // check if command is one that doesn't need arguments
-                // if (!(command.equals("list") || command.equals("bye"))) {
-                // // for all other commands, everything after first word must not be empty
-                // if (taskString.isEmpty()) {
-                // System.out.println(" Details after '" + command + "' cannot be empty.");
-                // continue;
-                // }
-                // }
 
                 switch (command) {
                     case "list":
@@ -246,20 +255,23 @@ public class Pakipaki {
                         handleEvent(taskString, taskList);
                         break;
 
+                    case "delete":
+                        validateCommandDetails(command, taskString);
+                        handleDelete(taskString, taskList);
+                        break;
+
                     default:
                         String unknownCommandMsg = """
                                 Sorry, I do not quite get that.
 
                                     %s
                                 """.formatted(USERGUIDEMSG);
-                        // System.out.println(unknownCommandMsg);
-                        // break;
                         throw new PakipakiException(unknownCommandMsg);
                 }
             } catch (PakipakiException e) {
-                System.out.println("    " + e.getMessage());
+                System.out.println((e.getMessage()).indent(4));
             } catch (Exception e) {
-                System.out.println("    Something went wrong!: " + e.getMessage());
+                System.out.println(("Something went wrong!: " + e.getMessage()).indent(4));
             }
         }
     }
