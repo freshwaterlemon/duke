@@ -1,7 +1,12 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Pakipaki {
+    private static final String DEFAULT_STORAGE_FILEPATH = "data/tasks.txt";
     private static final String BOTNAME = "PakiPaki";
     private static final String HORIZONTAL_LINE = "____________________________________________________________";
     private static final String USERGUIDEMSG = """
@@ -47,7 +52,7 @@ public class Pakipaki {
             System.out.println(
                     ("Here's what's on your task list so far: " + "(" + taskList.size() + " in total)").indent(4));
             for (int i = 0; i < taskList.size(); i++) {
-                System.out.println("        " + (i + 1) + ". " + taskList.get(i));
+                System.out.println((((i + 1) + ". " + taskList.get(i)).indent(8)));
             }
             System.out.println();
         }
@@ -90,7 +95,7 @@ public class Pakipaki {
      */
     private static Task findTaskByDescription(String description, ArrayList<Task> taskList) throws PakipakiException {
         try {
-            int taskIndex = Integer.parseInt(description) - 1; // Adjust for 1-based input
+            int taskIndex = Integer.parseInt(description) - 1;
             if (taskIndex < 0 || taskIndex >= taskList.size()) {
                 throw new PakipakiException("No task number: " + (taskIndex + 1));
             }
@@ -115,6 +120,7 @@ public class Pakipaki {
             task.markAsDone();
             System.out.println(("Alright! \"" + taskString + "\" mark as done!").indent(4));
             System.out.println((task + "\n").indent(8));
+            saveTasksToStorage(taskList);
         } catch (PakipakiException e) {
             System.out.println((e.getMessage() + "\n").indent(4));
         }
@@ -127,6 +133,7 @@ public class Pakipaki {
             task.markAsUndone();
             System.out.println(("Alright! \"" + taskString + "\" unmark.").indent(4));
             System.out.println((task + "\n").indent(8));
+            saveTasksToStorage(taskList);
         } catch (PakipakiException e) {
             System.out.println((e.getMessage() + "\n").indent(4));
         }
@@ -138,6 +145,8 @@ public class Pakipaki {
         System.out.println(("Got it, task added to your task list.").indent(4));
         System.out.println((task.toString() + "\n").indent(8));
         System.out.println(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
+
+        saveTasksToStorage(taskList);
     }
 
     // handle to do
@@ -155,8 +164,10 @@ public class Pakipaki {
         }
         String deadlineDescription = description.substring(0, findIndex).trim();
         String deadlineTiming = description.substring(findIndex + 3).trim();
-        String formattedDeadlineDescription = deadlineDescription + " (by: " + deadlineTiming + ")";
-        addTask(new Deadline(formattedDeadlineDescription), taskList);
+        // String formattedDeadlineDescription = deadlineDescription + " (by: " +
+        // deadlineTiming + ")";
+        // addTask(new Deadline(formattedDeadlineDescription), taskList);
+        addTask(new Deadline(deadlineDescription, deadlineTiming), taskList);
 
     }
 
@@ -173,9 +184,11 @@ public class Pakipaki {
         String eventDescription = description.substring(0, findIndexFrom).trim();
         String eventTimingFrom = description.substring(findIndexFrom + 5, findIndexTo).trim();
         String eventTimingTo = description.substring(findIndexTo + 3).trim();
-        String formattedEventDescription = eventDescription + " (from: " + eventTimingFrom + " to: " + eventTimingTo
-                + ")";
-        addTask(new Event(formattedEventDescription), taskList);
+        // String formattedEventDescription = eventDescription + " (from: " +
+        // eventTimingFrom + " to: " + eventTimingTo
+        // + ")";
+        // addTask(new Event(formattedEventDescription), taskList);
+        addTask(new Event(eventDescription, eventTimingFrom, eventTimingTo), taskList);
     }
 
     // delete task object from arraylist of task and display confirmation message
@@ -184,6 +197,8 @@ public class Pakipaki {
         System.out.println(("Got it, task removed from your task list.").indent(4));
         System.out.println((task.toString() + "\n").indent(8));
         System.out.println(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
+
+        saveTasksToStorage(taskList);
     }
 
     // handle delete
@@ -199,14 +214,102 @@ public class Pakipaki {
         }
     }
 
+    // file loading and storage
+    public static void handleStorage(ArrayList<Task> taskList) {
+        File f = new File(DEFAULT_STORAGE_FILEPATH);
+        try {
+            if (f.exists()) {
+                System.out.println("Storage file found. Loading saved tasks");
+                readStorageFile(f, taskList);
+            } else {
+                createStorageFile(f);
+                // System.out.println("Storage file created.");
+            }
+        } catch (IOException e) {
+            System.err.println("IO error during storage handling: " + e.getMessage());
+        }
+    }
+
+    // create file
+    public static void createStorageFile(File f) {
+        try {
+            f.getParentFile().mkdirs();
+            f.createNewFile();
+        } catch (IOException e) {
+            System.out.println("An error occurred, file not created.");
+        }
+    }
+
+    public static void writeStorageFile(File f, String textToAdd) {
+        try {
+            FileWriter fw = new FileWriter(f);
+            fw.write(textToAdd);
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
+        }
+    }
+
+    private static void saveTasksToStorage(ArrayList<Task> taskList) {
+        File f = new File(DEFAULT_STORAGE_FILEPATH);
+        StringBuilder sb = new StringBuilder();
+        for (Task task : taskList) {
+            sb.append(task.toStorageString()).append("\n");
+        }
+        writeStorageFile(f, sb.toString());
+    }
+
+    // read from tasks.txt in storage and add them to tasklist
+    public static void readStorageFile(File f, ArrayList<Task> taskList) throws FileNotFoundException {
+        try (Scanner s = new Scanner(f)) { // close scanner after done
+            while (s.hasNext()) {
+                // System.out.println(s.nextLine());
+
+                String line = s.nextLine().trim();
+                // split lines
+                String[] parts = line.split(" \\| "); // split by '|'
+                String taskType = parts[0];
+                boolean isDone = parts[1].equals("1"); // true if 1 -> mark with X
+                String description = parts[2];
+
+                Task task;
+
+                switch (taskType) {
+                    case "T": // todo
+                        task = new Todo(description, isDone);
+                        break;
+                    case "D": // deadline
+                        String by = parts[3];
+                        task = new Deadline(description, by, isDone);
+                        break;
+                    case "E": // event
+                        String from = parts[3];
+                        String to = parts[4];
+                        task = new Event(description, from, to, isDone);
+                        break;
+                    default:
+                        throw new PakipakiException("Error reading task list from storage");
+                }
+                taskList.add(task);
+
+            }
+        } catch (Exception e) {
+            System.out.println("Out of bound");
+        }
+    }
+
     // get user input and display them
     public static void handleUserInput(Scanner in) {
 
         // arraylist of task object to store all task dynamically
         ArrayList<Task> taskList = new ArrayList<Task>();
+        // load tasklist from storage if availble
+        handleStorage(taskList);
+
         // loop for user input
         while (true) {
             try {
+
                 System.out.println();
                 String userInput = in.nextLine().trim();
 
@@ -277,9 +380,15 @@ public class Pakipaki {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        startMsg();
-        handleUserInput(in);
-        in.close();
+        // Scanner in = new Scanner(System.in);
+        // startMsg();
+        // handleStorage();
+        // handleUserInput(in);
+        // in.close();
+        try (Scanner in = new Scanner(System.in)) { // close scanner
+            startMsg();
+            // handleStorage();
+            handleUserInput(in);
+        }
     }
 }

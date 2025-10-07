@@ -4,7 +4,11 @@ public abstract class Task {
 
     public Task(String description) {
         this.description = description;
-        this.isDone = false;
+    }
+
+    public Task(String description, boolean isDone) {
+        this.description = description;
+        this.isDone = isDone;
     }
 
     public String getStatusIcon() {
@@ -31,5 +35,7 @@ public abstract class Task {
 
     @Override
     public abstract String toString();
+
+    public abstract String toStorageString();
 
 }

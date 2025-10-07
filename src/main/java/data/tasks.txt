@@ -1,0 +1,4 @@
+T | 1 | borrow book
+D | 0 | return book | June 6
+E | 0 | meeting | Aug 6 2pm | Aug 6 4pm
+T | 1 | buy lunch
