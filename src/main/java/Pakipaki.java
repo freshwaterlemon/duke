@@ -164,9 +164,6 @@ public class Pakipaki {
         }
         String deadlineDescription = description.substring(0, findIndex).trim();
         String deadlineTiming = description.substring(findIndex + 3).trim();
-        // String formattedDeadlineDescription = deadlineDescription + " (by: " +
-        // deadlineTiming + ")";
-        // addTask(new Deadline(formattedDeadlineDescription), taskList);
         addTask(new Deadline(deadlineDescription, deadlineTiming), taskList);
 
     }
@@ -184,10 +181,6 @@ public class Pakipaki {
         String eventDescription = description.substring(0, findIndexFrom).trim();
         String eventTimingFrom = description.substring(findIndexFrom + 5, findIndexTo).trim();
         String eventTimingTo = description.substring(findIndexTo + 3).trim();
-        // String formattedEventDescription = eventDescription + " (from: " +
-        // eventTimingFrom + " to: " + eventTimingTo
-        // + ")";
-        // addTask(new Event(formattedEventDescription), taskList);
         addTask(new Event(eventDescription, eventTimingFrom, eventTimingTo), taskList);
     }
 
@@ -240,6 +233,7 @@ public class Pakipaki {
         }
     }
 
+    // write to storage file
     public static void writeStorageFile(File f, String textToAdd) {
         try {
             FileWriter fw = new FileWriter(f);
@@ -250,6 +244,7 @@ public class Pakipaki {
         }
     }
 
+    // save task list to storage txt file
     private static void saveTasksToStorage(ArrayList<Task> taskList) {
         File f = new File(DEFAULT_STORAGE_FILEPATH);
         StringBuilder sb = new StringBuilder();
@@ -263,72 +258,71 @@ public class Pakipaki {
     public static void readStorageFile(File f, ArrayList<Task> taskList) throws IOException {
         try (Scanner s = new Scanner(f)) { // close scanner after done
             while (s.hasNext()) {
-
                 String line = s.nextLine().trim();
-                // split lines
-                String[] parts = line.split(" \\| "); // split by '|'
-
-                // check
-                if (parts.length < 3) {
-                    throw new IOException("Corrupted line: " + line);
-                }
-
-                String taskType = parts[0];
-                boolean isDone = parts[1].equals("1"); // true if 1 -> mark with X
-                String description = parts[2];
-
-                Task task;
-
-                switch (taskType) {
-                    case "T": // todo
-                        if (parts.length > 3) {
-                            throw new IOException("Corrupted todo line: " + line);
-                        }
-                        task = new Todo(description, isDone);
-                        break;
-                    case "D": // deadline
-                        if (parts.length < 4) {
-                            throw new IOException("Corrupted deadline line: " + line);
-                        }
-                        String by = parts[3];
-                        task = new Deadline(description, by, isDone);
-                        break;
-                    case "E": // event
-                        if (parts.length < 5) {
-                            throw new IOException("Corrupted event line: " + line);
-                        }
-                        String from = parts[3];
-                        String to = parts[4];
-                        task = new Event(description, from, to, isDone);
-                        break;
-                    default:
-                        throw new IOException("Unknown task type in line: " + line);
-                }
+                Task task = createTaskFromLine(line);
                 taskList.add(task);
-
             }
         } catch (IOException e) {
             System.out.println("Storage file appears corrupted: " + e.getMessage());
-            File archiveFile = new File(f.getParent(), STORAGE_ARCHIVE_FILENAME);
-
-            // rename corrupted file
-            boolean renamed = f.renameTo(archiveFile);
-            if (renamed) {
-                System.out.println("Renamed corrupted storage to: " + archiveFile.getName());
-            } else {
-                System.out.println("Failed to rename corrupted storage file.");
-                if (f.delete()) {
-                    System.out.println("Deleted corrupted storage file.");
-                } else {
-                    System.out.println("Failed to delete corrupted storage file.");
-                }
-            }
-
-            createStorageFile(f); // create new empty file with original file name
-
-            taskList.clear(); // clear the task list as loading failed
-
+            handleCorruptedFile(f, taskList);
         }
+    }
+
+    // create task object from a single line from storage file
+    private static Task createTaskFromLine(String line) throws IOException {
+        String[] parts = line.split(" \\| "); // split by '|'
+
+        if (parts.length < 3) { // check
+            throw new IOException("Corrupted line: " + line);
+        }
+
+        String taskType = parts[0];
+        boolean isDone = parts[1].equals("1"); // true if 1 -> mark with X
+        String description = parts[2];
+
+        switch (taskType) {
+            case "T": // todo
+                if (parts.length > 3)
+                    throw new IOException("Corrupted todo line: " + line);
+                return new Todo(description, isDone);
+
+            case "D": // deadline
+                if (parts.length < 4)
+                    throw new IOException("Corrupted deadline line: " + line);
+                String by = parts[3];
+                return new Deadline(description, by, isDone);
+
+            case "E": // event
+                if (parts.length < 5)
+                    throw new IOException("Corrupted event line: " + line);
+                String from = parts[3];
+                String to = parts[4];
+                return new Event(description, from, to, isDone);
+
+            default:
+                throw new IOException("Unknown task type in line: " + line);
+        }
+    }
+
+    // handle corrupted file
+    private static void handleCorruptedFile(File f, ArrayList<Task> taskList) {
+        File archiveFile = new File(f.getParent(), STORAGE_ARCHIVE_FILENAME);
+
+        // rename corrupted file
+        boolean renamed = f.renameTo(archiveFile);
+        if (renamed) {
+            System.out.println("Renamed corrupted storage to: " + archiveFile.getName());
+        } else {
+            System.out.println("Failed to rename corrupted storage file.");
+            if (f.delete()) {
+                System.out.println("Deleted corrupted storage file.");
+            } else {
+                System.out.println("Failed to delete corrupted storage file.");
+            }
+        }
+
+        createStorageFile(f); // create new empty file with original file name
+        taskList.clear(); // clear the task list as loading failed
     }
 
     // get user input and display them
