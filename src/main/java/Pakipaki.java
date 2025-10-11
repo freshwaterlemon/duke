@@ -1,76 +1,20 @@
 import java.util.Scanner;
 import ui.Ui;
+import storage.Storage;
+
 import task.Deadline;
 import task.Event;
 import task.Task;
 import task.Todo;
 
 import java.util.ArrayList;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class Pakipaki {
     private static final String DEFAULT_STORAGE_FILEPATH = "data/tasks.txt";
-    private static final String STORAGE_ARCHIVE_FILENAME = "tasksArchive.txt";
+    // private static final String STORAGE_ARCHIVE_FILENAME = "tasksArchive.txt";
 
     private static final Ui ui = new Ui();
-
-    // private static final String BOTNAME = "PakiPaki";
-    // private static final String HORIZONTAL_LINE =
-    // "____________________________________________________________";
-    // private static final String USERGUIDEMSG = """
-    // Task Commands Overview:
-
-    // 1. Type 'list' to see all your tasks.
-    // 2. Use 'todo <task>' to add a simple task.
-    // 3. Use 'deadline <task> /by <date/time>' to add a task with a deadline.
-    // 4. Use 'event <task> /from <start date/time> /to <end date/time>' to add an
-    // event.
-    // 5. Use 'mark <task>' to mark a task as done.
-    // 6. Use 'unmark <task>' to mark a task as not done.
-    // 7. Type 'bye' to exit the chat.
-    // """;
-
-    // // print the horizontal decoration line for seperation
-    // private static void printHorzLine() {
-    // System.out.println(HORIZONTAL_LINE);
-    // }
-
-    // // print start message
-    // private static void startMsg() {
-    // printHorzLine();
-    // String message = """
-    // Hello! I'm %s, your friendly assistant here to help you manage your tasks.
-
-    // %s
-    // """.formatted(BOTNAME, USERGUIDEMSG);
-    // System.out.println(message);
-    // printHorzLine();
-    // }
-
-    // // print end message
-    // private static void endMsg() {
-    // System.out.println(("Thank you for chatting with me! Until next
-    // time!").indent(4));
-    // printHorzLine();
-    // }
-
-    // // print items inside task list and display message if the list is empty.
-    // private static void printTaskList(ArrayList<Task> taskList) {
-    // if (taskList.isEmpty()) {
-    // System.out.println(("Your task list is empty! Add something and I'll keep it
-    // ready for you!").indent(4));
-    // } else {
-    // System.out.println(
-    // ("Here's what's on your task list so far: " + "(" + taskList.size() + " in
-    // total)").indent(4));
-    // for (int i = 0; i < taskList.size(); i++) {
-    // System.out.println((((i + 1) + ". " + taskList.get(i)).indent(8)));
-    // }
-    // System.out.println();
-    // }
-    // }
+    private static final Storage storage = new Storage(DEFAULT_STORAGE_FILEPATH);
 
     // find if task is inside the tasklist arraylist
     private static Task findTaskByDescription(String description, ArrayList<Task> taskList, boolean doneStatus,
@@ -134,7 +78,8 @@ public class Pakipaki {
             task.markAsDone();
             System.out.println(("Alright! \"" + taskString + "\" mark as done!").indent(4));
             System.out.println((task + "\n").indent(8));
-            saveTasksToStorage(taskList); // mark and save new tasklist to tasks.txt
+            // saveTasksToStorage(taskList); // mark and save new tasklist to tasks.txt
+            storage.saveTasksToStorage(taskList); // mark and save new tasklist to tasks.txt
         } catch (PakipakiException e) {
             System.out.println((e.getMessage() + "\n").indent(4));
         }
@@ -147,7 +92,8 @@ public class Pakipaki {
             task.markAsUndone();
             System.out.println(("Alright! \"" + taskString + "\" unmark.").indent(4));
             System.out.println((task + "\n").indent(8));
-            saveTasksToStorage(taskList); // unmark and save new tasklist to tasks.txt
+            // saveTasksToStorage(taskList); // unmark and save new tasklist to tasks.txt
+            storage.saveTasksToStorage(taskList); // unmark and save new tasklist to tasks.txt
         } catch (PakipakiException e) {
             System.out.println((e.getMessage() + "\n").indent(4));
         }
@@ -160,7 +106,8 @@ public class Pakipaki {
         System.out.println((task.toString() + "\n").indent(8));
         System.out.println(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
 
-        saveTasksToStorage(taskList); // add and save new tasklist to tasks.txt
+        // saveTasksToStorage(taskList); // add and save new tasklist to tasks.txt
+        storage.saveTasksToStorage(taskList); // add and save new tasklist to tasks.txt
     }
 
     // handle to do
@@ -205,7 +152,8 @@ public class Pakipaki {
         System.out.println((task.toString() + "\n").indent(8));
         System.out.println(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
 
-        saveTasksToStorage(taskList); // delete and save new tasklist to tasks.txt
+        // saveTasksToStorage(taskList); // delete and save new tasklist to tasks.txt
+        storage.saveTasksToStorage(taskList); // delete and save new tasklist to tasks.txt
     }
 
     // handle delete
@@ -221,129 +169,131 @@ public class Pakipaki {
         }
     }
 
-    // file loading and storage
-    public static void handleStorage(ArrayList<Task> taskList) {
-        File f = new File(DEFAULT_STORAGE_FILEPATH);
-        try {
-            if (f.exists()) {
-                System.out.println("Storage file found. saved tasks loaded");
-                readStorageFile(f, taskList);
-            } else {
-                createStorageFile(f);
-            }
-        } catch (IOException e) {
-            System.err.println("IO error during storage handling: " + e.getMessage());
-        }
-    }
+    // // file loading and storage
+    // public static void handleStorage(ArrayList<Task> taskList) {
+    // File f = new File(DEFAULT_STORAGE_FILEPATH);
+    // try {
+    // if (f.exists()) {
+    // System.out.println("Storage file found. saved tasks loaded");
+    // readStorageFile(f, taskList);
+    // } else {
+    // createStorageFile(f);
+    // }
+    // } catch (IOException e) {
+    // System.err.println("IO error during storage handling: " + e.getMessage());
+    // }
+    // }
 
-    // create file
-    public static void createStorageFile(File f) {
-        try {
-            f.getParentFile().mkdirs();
-            f.createNewFile();
-            System.out.println("Created new storage file: " + f.getName());
-        } catch (IOException e) {
-            System.out.println("An error occurred, file not created.");
-        }
-    }
+    // // create file
+    // public static void createStorageFile(File f) {
+    // try {
+    // f.getParentFile().mkdirs();
+    // f.createNewFile();
+    // System.out.println("Created new storage file: " + f.getName());
+    // } catch (IOException e) {
+    // System.out.println("An error occurred, file not created.");
+    // }
+    // }
 
-    // write to storage file
-    public static void writeStorageFile(File f, String textToAdd) {
-        try {
-            FileWriter fw = new FileWriter(f);
-            fw.write(textToAdd);
-            fw.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while writing to the file.");
-        }
-    }
+    // // write to storage file
+    // public static void writeStorageFile(File f, String textToAdd) {
+    // try {
+    // FileWriter fw = new FileWriter(f);
+    // fw.write(textToAdd);
+    // fw.close();
+    // } catch (IOException e) {
+    // System.out.println("An error occurred while writing to the file.");
+    // }
+    // }
 
-    // save task list to storage txt file
-    private static void saveTasksToStorage(ArrayList<Task> taskList) {
-        File f = new File(DEFAULT_STORAGE_FILEPATH);
-        StringBuilder sb = new StringBuilder();
-        for (Task task : taskList) {
-            sb.append(task.toStorageString()).append("\n");
-        }
-        writeStorageFile(f, sb.toString());
-    }
+    // // save task list to storage txt file
+    // private static void saveTasksToStorage(ArrayList<Task> taskList) {
+    // File f = new File(DEFAULT_STORAGE_FILEPATH);
+    // StringBuilder sb = new StringBuilder();
+    // for (Task task : taskList) {
+    // sb.append(task.toStorageString()).append("\n");
+    // }
+    // writeStorageFile(f, sb.toString());
+    // }
 
-    // read from tasks.txt in storage and add them to tasklist
-    public static void readStorageFile(File f, ArrayList<Task> taskList) throws IOException {
-        try (Scanner s = new Scanner(f)) { // close scanner after done
-            while (s.hasNext()) {
-                String line = s.nextLine().trim();
-                Task task = createTaskFromLine(line);
-                taskList.add(task);
-            }
-        } catch (IOException e) {
-            System.out.println("Storage file appears corrupted: " + e.getMessage());
-            handleCorruptedFile(f, taskList);
-        }
-    }
+    // // read from tasks.txt in storage and add them to tasklist
+    // public static void readStorageFile(File f, ArrayList<Task> taskList) throws
+    // IOException {
+    // try (Scanner s = new Scanner(f)) { // close scanner after done
+    // while (s.hasNext()) {
+    // String line = s.nextLine().trim();
+    // Task task = createTaskFromLine(line);
+    // taskList.add(task);
+    // }
+    // } catch (IOException e) {
+    // System.out.println("Storage file appears corrupted: " + e.getMessage());
+    // handleCorruptedFile(f, taskList);
+    // }
+    // }
 
-    // create task object from a single line from storage file
-    private static Task createTaskFromLine(String line) throws IOException {
-        String[] parts = line.split(" \\| "); // split by '|'
+    // // create task object from a single line from storage file
+    // private static Task createTaskFromLine(String line) throws IOException {
+    // String[] parts = line.split(" \\| "); // split by '|'
 
-        if (parts.length < 3) { // check
-            throw new IOException("Corrupted line: " + line);
-        }
+    // if (parts.length < 3) { // check
+    // throw new IOException("Corrupted line: " + line);
+    // }
 
-        String taskType = parts[0];
-        boolean isDone = parts[1].equals("1"); // true if 1 -> mark with X
-        String description = parts[2];
+    // String taskType = parts[0];
+    // boolean isDone = parts[1].equals("1"); // true if 1 -> mark with X
+    // String description = parts[2];
 
-        switch (taskType) {
-            case "T": // todo
-                if (parts.length > 3)
-                    throw new IOException("Corrupted todo line: " + line);
-                return new Todo(description, isDone);
+    // switch (taskType) {
+    // case "T": // todo
+    // if (parts.length > 3)
+    // throw new IOException("Corrupted todo line: " + line);
+    // return new Todo(description, isDone);
 
-            case "D": // deadline
-                if (parts.length < 4)
-                    throw new IOException("Corrupted deadline line: " + line);
-                String by = parts[3];
-                return new Deadline(description, by, isDone);
+    // case "D": // deadline
+    // if (parts.length < 4)
+    // throw new IOException("Corrupted deadline line: " + line);
+    // String by = parts[3];
+    // return new Deadline(description, by, isDone);
 
-            case "E": // event
-                if (parts.length < 5)
-                    throw new IOException("Corrupted event line: " + line);
-                String from = parts[3];
-                String to = parts[4];
-                return new Event(description, from, to, isDone);
+    // case "E": // event
+    // if (parts.length < 5)
+    // throw new IOException("Corrupted event line: " + line);
+    // String from = parts[3];
+    // String to = parts[4];
+    // return new Event(description, from, to, isDone);
 
-            default:
-                throw new IOException("Unknown task type in line: " + line);
-        }
-    }
+    // default:
+    // throw new IOException("Unknown task type in line: " + line);
+    // }
+    // }
 
-    // handle corrupted file
-    private static void handleCorruptedFile(File f, ArrayList<Task> taskList) {
-        File archiveFile = new File(f.getParent(), STORAGE_ARCHIVE_FILENAME);
+    // // handle corrupted file
+    // private static void handleCorruptedFile(File f, ArrayList<Task> taskList) {
+    // File archiveFile = new File(f.getParent(), STORAGE_ARCHIVE_FILENAME);
 
-        // rename corrupted file
-        boolean renamed = f.renameTo(archiveFile);
-        if (renamed) {
-            System.out.println("Renamed corrupted storage to: " + archiveFile.getName());
-        } else {
-            System.out.println("Failed to rename corrupted storage file.");
-            if (f.delete()) {
-                System.out.println("Deleted corrupted storage file.");
-            } else {
-                System.out.println("Failed to delete corrupted storage file.");
-            }
-        }
+    // // rename corrupted file
+    // boolean renamed = f.renameTo(archiveFile);
+    // if (renamed) {
+    // System.out.println("Renamed corrupted storage to: " + archiveFile.getName());
+    // } else {
+    // System.out.println("Failed to rename corrupted storage file.");
+    // if (f.delete()) {
+    // System.out.println("Deleted corrupted storage file.");
+    // } else {
+    // System.out.println("Failed to delete corrupted storage file.");
+    // }
+    // }
 
-        createStorageFile(f); // create new empty file with original file name
-        taskList.clear(); // clear the task list as loading failed
-    }
+    // createStorageFile(f); // create new empty file with original file name
+    // taskList.clear(); // clear the task list as loading failed
+    // }
 
     // get user input and display them
     public static void handleUserInput(Scanner in) {
 
         ArrayList<Task> taskList = new ArrayList<Task>(); // arraylist of task object to store all task dynamically
-        handleStorage(taskList); // load tasklist from storage if availble
+        // handleStorage(taskList); // load tasklist from storage if availble
+        storage.handleStorage(taskList); // load tasklist from storage if availble
 
         // loop for user input
         while (true) {
@@ -365,12 +315,10 @@ public class Pakipaki {
 
                 switch (command) {
                     case "list":
-                        // printTaskList(taskList);
                         ui.printTaskList(taskList);
                         break;
 
                     case "bye":
-                        // endMsg();
                         ui.endMsg();
                         return;
 
@@ -408,12 +356,6 @@ public class Pakipaki {
                         String unknownCommandMsg = String.format(
                                 "Sorry, I do not quite get that.\n\n%s", ui.getUserGuideMsg());
                         throw new PakipakiException(unknownCommandMsg);
-                    // String unknownCommandMsg = """
-                    // Sorry, I do not quite get that.
-
-                    // %s
-                    // """.formatted(USERGUIDEMSG);
-                    // throw new PakipakiException(unknownCommandMsg);
                 }
             } catch (PakipakiException e) {
                 System.out.println((e.getMessage()).indent(4));
@@ -425,7 +367,6 @@ public class Pakipaki {
 
     public static void main(String[] args) {
         try (Scanner in = new Scanner(System.in)) { // close scanner
-            // startMsg();
             ui.startMsg();
             handleUserInput(in);
         }
