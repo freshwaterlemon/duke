@@ -1,4 +1,10 @@
 import java.util.Scanner;
+import ui.Ui;
+import task.Deadline;
+import task.Event;
+import task.Task;
+import task.Todo;
+
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileWriter;
@@ -7,56 +13,64 @@ import java.io.IOException;
 public class Pakipaki {
     private static final String DEFAULT_STORAGE_FILEPATH = "data/tasks.txt";
     private static final String STORAGE_ARCHIVE_FILENAME = "tasksArchive.txt";
-    private static final String BOTNAME = "PakiPaki";
-    private static final String HORIZONTAL_LINE = "____________________________________________________________";
-    private static final String USERGUIDEMSG = """
-            Task Commands Overview:
 
-                1. Type 'list' to see all your tasks.
-                2. Use 'todo <task>' to add a simple task.
-                3. Use 'deadline <task> /by <date/time>' to add a task with a deadline.
-                4. Use 'event <task> /from <start date/time> /to <end date/time>' to add an event.
-                5. Use 'mark <task>' to mark a task as done.
-                6. Use 'unmark <task>' to mark a task as not done.
-                7. Type 'bye' to exit the chat.
-            """;
+    private static final Ui ui = new Ui();
 
-    // print the horizontal decoration line for seperation
-    private static void printHorzLine() {
-        System.out.println(HORIZONTAL_LINE);
-    }
+    // private static final String BOTNAME = "PakiPaki";
+    // private static final String HORIZONTAL_LINE =
+    // "____________________________________________________________";
+    // private static final String USERGUIDEMSG = """
+    // Task Commands Overview:
 
-    // print start message
-    private static void startMsg() {
-        printHorzLine();
-        String message = """
-                Hello! I'm %s, your friendly assistant here to help you manage your tasks.
+    // 1. Type 'list' to see all your tasks.
+    // 2. Use 'todo <task>' to add a simple task.
+    // 3. Use 'deadline <task> /by <date/time>' to add a task with a deadline.
+    // 4. Use 'event <task> /from <start date/time> /to <end date/time>' to add an
+    // event.
+    // 5. Use 'mark <task>' to mark a task as done.
+    // 6. Use 'unmark <task>' to mark a task as not done.
+    // 7. Type 'bye' to exit the chat.
+    // """;
 
-                %s
-                """.formatted(BOTNAME, USERGUIDEMSG);
-        System.out.println(message);
-        printHorzLine();
-    }
+    // // print the horizontal decoration line for seperation
+    // private static void printHorzLine() {
+    // System.out.println(HORIZONTAL_LINE);
+    // }
 
-    // print end message
-    private static void endMsg() {
-        System.out.println(("Thank you for chatting with me! Until next time!").indent(4));
-        printHorzLine();
-    }
+    // // print start message
+    // private static void startMsg() {
+    // printHorzLine();
+    // String message = """
+    // Hello! I'm %s, your friendly assistant here to help you manage your tasks.
 
-    // print items inside task list and display message if the list is empty.
-    private static void printTaskList(ArrayList<Task> taskList) {
-        if (taskList.isEmpty()) {
-            System.out.println(("Your task list is empty! Add something and I'll keep it ready for you!").indent(4));
-        } else {
-            System.out.println(
-                    ("Here's what's on your task list so far: " + "(" + taskList.size() + " in total)").indent(4));
-            for (int i = 0; i < taskList.size(); i++) {
-                System.out.println((((i + 1) + ". " + taskList.get(i)).indent(8)));
-            }
-            System.out.println();
-        }
-    }
+    // %s
+    // """.formatted(BOTNAME, USERGUIDEMSG);
+    // System.out.println(message);
+    // printHorzLine();
+    // }
+
+    // // print end message
+    // private static void endMsg() {
+    // System.out.println(("Thank you for chatting with me! Until next
+    // time!").indent(4));
+    // printHorzLine();
+    // }
+
+    // // print items inside task list and display message if the list is empty.
+    // private static void printTaskList(ArrayList<Task> taskList) {
+    // if (taskList.isEmpty()) {
+    // System.out.println(("Your task list is empty! Add something and I'll keep it
+    // ready for you!").indent(4));
+    // } else {
+    // System.out.println(
+    // ("Here's what's on your task list so far: " + "(" + taskList.size() + " in
+    // total)").indent(4));
+    // for (int i = 0; i < taskList.size(); i++) {
+    // System.out.println((((i + 1) + ". " + taskList.get(i)).indent(8)));
+    // }
+    // System.out.println();
+    // }
+    // }
 
     // find if task is inside the tasklist arraylist
     private static Task findTaskByDescription(String description, ArrayList<Task> taskList, boolean doneStatus,
@@ -351,11 +365,13 @@ public class Pakipaki {
 
                 switch (command) {
                     case "list":
-                        printTaskList(taskList);
+                        // printTaskList(taskList);
+                        ui.printTaskList(taskList);
                         break;
 
                     case "bye":
-                        endMsg();
+                        // endMsg();
+                        ui.endMsg();
                         return;
 
                     case "mark":
@@ -389,12 +405,15 @@ public class Pakipaki {
                         break;
 
                     default:
-                        String unknownCommandMsg = """
-                                Sorry, I do not quite get that.
-
-                                    %s
-                                """.formatted(USERGUIDEMSG);
+                        String unknownCommandMsg = String.format(
+                                "Sorry, I do not quite get that.\n\n%s", ui.getUserGuideMsg());
                         throw new PakipakiException(unknownCommandMsg);
+                    // String unknownCommandMsg = """
+                    // Sorry, I do not quite get that.
+
+                    // %s
+                    // """.formatted(USERGUIDEMSG);
+                    // throw new PakipakiException(unknownCommandMsg);
                 }
             } catch (PakipakiException e) {
                 System.out.println((e.getMessage()).indent(4));
@@ -406,7 +425,8 @@ public class Pakipaki {
 
     public static void main(String[] args) {
         try (Scanner in = new Scanner(System.in)) { // close scanner
-            startMsg();
+            // startMsg();
+            ui.startMsg();
             handleUserInput(in);
         }
     }
