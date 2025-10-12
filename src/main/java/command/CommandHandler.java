@@ -2,6 +2,7 @@ package command;
 
 import java.util.Scanner;
 
+import exception.PakipakiException;
 import parser.Parser;
 import storage.Storage;
 import tasklist.TaskList;
@@ -60,11 +61,10 @@ public class CommandHandler {
                     default:
                         String unknownCommandMsg = String.format(
                                 "Sorry, I do not quite get that.\n\n%s", ui.getUserGuideMsg());
-                        // throw new PakipakiException(unknownCommandMsg);
-                        throw new Exception(unknownCommandMsg);
+                        throw new PakipakiException(unknownCommandMsg);
                 }
-                // } catch (PakipakiException e) {
-                // System.out.println((e.getMessage()).indent(4));
+            } catch (PakipakiException e) {
+                System.out.println((e.getMessage()).indent(4));
             } catch (Exception e) {
                 System.out.println(("Something went wrong!: " + e.getMessage()).indent(4));
             }
