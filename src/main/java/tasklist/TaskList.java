@@ -24,13 +24,17 @@ public class TaskList {
     }
 
     // save the current task list
-    private void saveTasks() {
-        storage.saveTasksToStorage(taskList);
+    public void saveTasks() {
+        storage.saveTasksToStorage(getTaskList());
     }
 
     // print tasklist
     public void listTasks() {
         ui.printTaskList(taskList);
+    }
+
+    public ArrayList<Task> getTaskList() {
+        return this.taskList;
     }
 
     // add task object to arraylist of task and display confirmation message
@@ -39,7 +43,7 @@ public class TaskList {
         ui.printMessage(("Got it, task added to your task list.").indent(4));
         ui.printMessage((task.toString() + "\n").indent(8));
         ui.printMessage(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
-        saveTasks(); // add and save new tasklist to tasks.txt
+        // saveTasks(); // add and save new tasklist to tasks.txt
 
     }
 
@@ -50,7 +54,7 @@ public class TaskList {
             task.markAsDone();
             ui.printMessage(("Alright! \"" + taskString + "\" mark as done!").indent(4));
             ui.printMessage((task + "\n").indent(8));
-            saveTasks(); // mark and save new tasklist to tasks.txt
+            // saveTasks(); // mark and save new tasklist to tasks.txt
             // } catch (PakipakiException e) {
         } catch (Exception e) {
             ui.printMessage((e.getMessage() + "\n").indent(4));
@@ -64,7 +68,7 @@ public class TaskList {
             task.markAsUndone();
             ui.printMessage(("Alright! \"" + taskString + "\" unmark.").indent(4));
             ui.printMessage((task + "\n").indent(8));
-            saveTasks(); // unmark and save new tasklist to tasks.txt
+            // saveTasks(); // unmark and save new tasklist to tasks.txt
             // } catch (PakipakiException e) {
         } catch (Exception e) {
             ui.printMessage((e.getMessage() + "\n").indent(4));
@@ -80,7 +84,7 @@ public class TaskList {
             ui.printMessage((task.toString() + "\n").indent(8));
             ui.printMessage(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
 
-            saveTasks(); // delete and save new tasklist to tasks.txt
+            // saveTasks(); // delete and save new tasklist to tasks.txt
         } catch (Exception e) {
             ui.printMessage(e.getMessage());
         }
@@ -90,17 +94,6 @@ public class TaskList {
     private Task findTaskByDescription(String description, boolean doneStatus, boolean findFromEnd)
             throws Exception {
         // unmark from the end of list as newer task should be unmark first
-        // int startFrom, endAt, step;
-
-        // if (findFromEnd) {
-        // startFrom = taskList.size() - 1;
-        // endAt = -1;
-        // step = -1;
-        // } else {
-        // startFrom = 0;
-        // endAt = taskList.size();
-        // step = 1;
-        // }
 
         // find from end if true
         int startFrom = findFromEnd ? taskList.size() - 1 : 0;
