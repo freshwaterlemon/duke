@@ -1,15 +1,13 @@
 package storage;
 
+import parser.Parser;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import task.Deadline;
-import task.Event;
 import task.Task;
-import task.Todo;
 
 public class Storage {
     private String filepath;
@@ -20,7 +18,6 @@ public class Storage {
 
     // file loading and storage
     public void handleStorage(ArrayList<Task> taskList) {
-        // File f = new File(DEFAULT_STORAGE_FILEPATH);
         File f = new File(filepath);
         try {
             if (f.exists()) {
@@ -71,8 +68,14 @@ public class Storage {
         try (Scanner s = new Scanner(f)) { // close scanner after done
             while (s.hasNext()) {
                 String line = s.nextLine().trim();
-                Task task = createTaskFromLine(line);
-                taskList.add(task);
+                // Task task = createTaskFromLine(line);
+                // taskList.add(task);
+                try {
+                    Task task = Parser.parseTaskLine(line);
+                    taskList.add(task);
+                } catch (IOException e) {
+                    System.out.println("Corrupted line skipping: " + e.getMessage());
+                }
             }
         } catch (IOException e) {
             System.out.println("Storage file appears corrupted: " + e.getMessage());
@@ -80,41 +83,41 @@ public class Storage {
         }
     }
 
-    // create task object from a single line from storage file
-    private Task createTaskFromLine(String line) throws IOException {
-        String[] parts = line.split(" \\| "); // split by '|'
+    // // create task object from a single line from storage file
+    // private Task createTaskFromLine(String line) throws IOException {
+    // String[] parts = line.split(" \\| "); // split by '|'
 
-        if (parts.length < 3) { // check
-            throw new IOException("Corrupted line: " + line);
-        }
+    // if (parts.length < 3) { // check
+    // throw new IOException("Corrupted line: " + line);
+    // }
 
-        String taskType = parts[0];
-        boolean isDone = parts[1].equals("1"); // true if 1 -> mark with X
-        String description = parts[2];
+    // String taskType = parts[0];
+    // boolean isDone = parts[1].equals("1"); // true if 1 -> mark with X
+    // String description = parts[2];
 
-        switch (taskType) {
-            case "T": // todo
-                if (parts.length > 3)
-                    throw new IOException("Corrupted todo line: " + line);
-                return new Todo(description, isDone);
+    // switch (taskType) {
+    // case "T": // todo
+    // if (parts.length > 3)
+    // throw new IOException("Corrupted todo line: " + line);
+    // return new Todo(description, isDone);
 
-            case "D": // deadline
-                if (parts.length < 4)
-                    throw new IOException("Corrupted deadline line: " + line);
-                String by = parts[3];
-                return new Deadline(description, by, isDone);
+    // case "D": // deadline
+    // if (parts.length < 4)
+    // throw new IOException("Corrupted deadline line: " + line);
+    // String by = parts[3];
+    // return new Deadline(description, by, isDone);
 
-            case "E": // event
-                if (parts.length < 5)
-                    throw new IOException("Corrupted event line: " + line);
-                String from = parts[3];
-                String to = parts[4];
-                return new Event(description, from, to, isDone);
+    // case "E": // event
+    // if (parts.length < 5)
+    // throw new IOException("Corrupted event line: " + line);
+    // String from = parts[3];
+    // String to = parts[4];
+    // return new Event(description, from, to, isDone);
 
-            default:
-                throw new IOException("Unknown task type in line: " + line);
-        }
-    }
+    // default:
+    // throw new IOException("Unknown task type in line: " + line);
+    // }
+    // }
 
     // handle corrupted file
     private static void handleCorruptedFile(File f, ArrayList<Task> taskList) {

@@ -1,17 +1,14 @@
 import java.util.Scanner;
 import ui.Ui;
 import storage.Storage;
+import parser.Parser;
 
-import task.Deadline;
-import task.Event;
 import task.Task;
-import task.Todo;
 
 import java.util.ArrayList;
 
 public class Pakipaki {
     private static final String DEFAULT_STORAGE_FILEPATH = "data/tasks.txt";
-    // private static final String STORAGE_ARCHIVE_FILENAME = "tasksArchive.txt";
 
     private static final Ui ui = new Ui();
     private static final Storage storage = new Storage(DEFAULT_STORAGE_FILEPATH);
@@ -78,7 +75,6 @@ public class Pakipaki {
             task.markAsDone();
             System.out.println(("Alright! \"" + taskString + "\" mark as done!").indent(4));
             System.out.println((task + "\n").indent(8));
-            // saveTasksToStorage(taskList); // mark and save new tasklist to tasks.txt
             storage.saveTasksToStorage(taskList); // mark and save new tasklist to tasks.txt
         } catch (PakipakiException e) {
             System.out.println((e.getMessage() + "\n").indent(4));
@@ -92,7 +88,6 @@ public class Pakipaki {
             task.markAsUndone();
             System.out.println(("Alright! \"" + taskString + "\" unmark.").indent(4));
             System.out.println((task + "\n").indent(8));
-            // saveTasksToStorage(taskList); // unmark and save new tasklist to tasks.txt
             storage.saveTasksToStorage(taskList); // unmark and save new tasklist to tasks.txt
         } catch (PakipakiException e) {
             System.out.println((e.getMessage() + "\n").indent(4));
@@ -106,43 +101,66 @@ public class Pakipaki {
         System.out.println((task.toString() + "\n").indent(8));
         System.out.println(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
 
-        // saveTasksToStorage(taskList); // add and save new tasklist to tasks.txt
         storage.saveTasksToStorage(taskList); // add and save new tasklist to tasks.txt
     }
 
     // handle to do
     private static void handleToDo(String description, ArrayList<Task> taskList) {
-        addTask(new Todo(description), taskList);
+        // addTask(new Todo(description), taskList);
+        try {
+            Task todoTask = Parser.parseTodo(description);
+            addTask(todoTask, taskList);
+        } catch (Exception e) {
+            ui.printMessage(("Error parsing todo: " + e.getMessage()).indent(4));
+        }
     }
 
     // handle deadline
     private static void handleDeadline(String description, ArrayList<Task> taskList) {
-        int findIndex = description.indexOf("/by");
-        if (findIndex == -1) {
-            System.out.println(("Oops! The deadline detail is missing").indent(4));
-            System.out.println(("Please use the format: deadline <task> /by <date/time>").indent(4));
-            return;
+        // int findIndex = description.indexOf("/by");
+        // if (findIndex == -1) {
+        // System.out.println(("Oops! The deadline detail is missing").indent(4));
+        // System.out.println(("Please use the format: deadline <task> /by
+        // <date/time>").indent(4));
+        // return;
+        // }
+        // String deadlineDescription = description.substring(0, findIndex).trim();
+        // String deadlineTiming = description.substring(findIndex + 3).trim();
+        // addTask(new Deadline(deadlineDescription, deadlineTiming), taskList);
+        try {
+            Task deadlineTask = Parser.parseDeadline(description);
+            addTask(deadlineTask, taskList);
+        } catch (Exception e) {
+            ui.printMessage(("Error parsing deadline: " + e.getMessage()).indent(4));
+            ui.printMessage(("Please use the format: deadline <task> /by <date/time>").indent(4));
         }
-        String deadlineDescription = description.substring(0, findIndex).trim();
-        String deadlineTiming = description.substring(findIndex + 3).trim();
-        addTask(new Deadline(deadlineDescription, deadlineTiming), taskList);
-
     }
 
     // handle event
     private static void handleEvent(String description, ArrayList<Task> taskList) {
-        int findIndexFrom = description.indexOf("/from");
-        int findIndexTo = description.indexOf("/to");
-        // user must include both from and to
-        if (findIndexFrom == -1 || findIndexTo == -1 || findIndexFrom > findIndexTo) {
-            System.out.println(("Oops! The event detail is missing").indent(4));
-            System.out.println(("Please use the format: event <task> /from <date/time> /to <date/time>").indent(4));
-            return;
+        // int findIndexFrom = description.indexOf("/from");
+        // int findIndexTo = description.indexOf("/to");
+        // // user must include both from and to
+        // if (findIndexFrom == -1 || findIndexTo == -1 || findIndexFrom > findIndexTo)
+        // {
+        // System.out.println(("Oops! The event detail is missing").indent(4));
+        // System.out.println(("Please use the format: event <task> /from <date/time>
+        // /to <date/time>").indent(4));
+        // return;
+        // }
+        // String eventDescription = description.substring(0, findIndexFrom).trim();
+        // String eventTimingFrom = description.substring(findIndexFrom + 5,
+        // findIndexTo).trim();
+        // String eventTimingTo = description.substring(findIndexTo + 3).trim();
+        // addTask(new Event(eventDescription, eventTimingFrom, eventTimingTo),
+        // taskList);
+        try {
+            Task eventTask = Parser.parseEvent(description);
+            addTask(eventTask, taskList);
+        } catch (Exception e) {
+            ui.printMessage(("Error parsing event: " + e.getMessage()).indent(4));
+            ui.printMessage(("Please use the format: event <task> /from <date/time> /to <date/time>").indent(4));
         }
-        String eventDescription = description.substring(0, findIndexFrom).trim();
-        String eventTimingFrom = description.substring(findIndexFrom + 5, findIndexTo).trim();
-        String eventTimingTo = description.substring(findIndexTo + 3).trim();
-        addTask(new Event(eventDescription, eventTimingFrom, eventTimingTo), taskList);
     }
 
     // delete task object from arraylist of task and display confirmation message
@@ -152,7 +170,6 @@ public class Pakipaki {
         System.out.println((task.toString() + "\n").indent(8));
         System.out.println(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
 
-        // saveTasksToStorage(taskList); // delete and save new tasklist to tasks.txt
         storage.saveTasksToStorage(taskList); // delete and save new tasklist to tasks.txt
     }
 
@@ -169,130 +186,10 @@ public class Pakipaki {
         }
     }
 
-    // // file loading and storage
-    // public static void handleStorage(ArrayList<Task> taskList) {
-    // File f = new File(DEFAULT_STORAGE_FILEPATH);
-    // try {
-    // if (f.exists()) {
-    // System.out.println("Storage file found. saved tasks loaded");
-    // readStorageFile(f, taskList);
-    // } else {
-    // createStorageFile(f);
-    // }
-    // } catch (IOException e) {
-    // System.err.println("IO error during storage handling: " + e.getMessage());
-    // }
-    // }
-
-    // // create file
-    // public static void createStorageFile(File f) {
-    // try {
-    // f.getParentFile().mkdirs();
-    // f.createNewFile();
-    // System.out.println("Created new storage file: " + f.getName());
-    // } catch (IOException e) {
-    // System.out.println("An error occurred, file not created.");
-    // }
-    // }
-
-    // // write to storage file
-    // public static void writeStorageFile(File f, String textToAdd) {
-    // try {
-    // FileWriter fw = new FileWriter(f);
-    // fw.write(textToAdd);
-    // fw.close();
-    // } catch (IOException e) {
-    // System.out.println("An error occurred while writing to the file.");
-    // }
-    // }
-
-    // // save task list to storage txt file
-    // private static void saveTasksToStorage(ArrayList<Task> taskList) {
-    // File f = new File(DEFAULT_STORAGE_FILEPATH);
-    // StringBuilder sb = new StringBuilder();
-    // for (Task task : taskList) {
-    // sb.append(task.toStorageString()).append("\n");
-    // }
-    // writeStorageFile(f, sb.toString());
-    // }
-
-    // // read from tasks.txt in storage and add them to tasklist
-    // public static void readStorageFile(File f, ArrayList<Task> taskList) throws
-    // IOException {
-    // try (Scanner s = new Scanner(f)) { // close scanner after done
-    // while (s.hasNext()) {
-    // String line = s.nextLine().trim();
-    // Task task = createTaskFromLine(line);
-    // taskList.add(task);
-    // }
-    // } catch (IOException e) {
-    // System.out.println("Storage file appears corrupted: " + e.getMessage());
-    // handleCorruptedFile(f, taskList);
-    // }
-    // }
-
-    // // create task object from a single line from storage file
-    // private static Task createTaskFromLine(String line) throws IOException {
-    // String[] parts = line.split(" \\| "); // split by '|'
-
-    // if (parts.length < 3) { // check
-    // throw new IOException("Corrupted line: " + line);
-    // }
-
-    // String taskType = parts[0];
-    // boolean isDone = parts[1].equals("1"); // true if 1 -> mark with X
-    // String description = parts[2];
-
-    // switch (taskType) {
-    // case "T": // todo
-    // if (parts.length > 3)
-    // throw new IOException("Corrupted todo line: " + line);
-    // return new Todo(description, isDone);
-
-    // case "D": // deadline
-    // if (parts.length < 4)
-    // throw new IOException("Corrupted deadline line: " + line);
-    // String by = parts[3];
-    // return new Deadline(description, by, isDone);
-
-    // case "E": // event
-    // if (parts.length < 5)
-    // throw new IOException("Corrupted event line: " + line);
-    // String from = parts[3];
-    // String to = parts[4];
-    // return new Event(description, from, to, isDone);
-
-    // default:
-    // throw new IOException("Unknown task type in line: " + line);
-    // }
-    // }
-
-    // // handle corrupted file
-    // private static void handleCorruptedFile(File f, ArrayList<Task> taskList) {
-    // File archiveFile = new File(f.getParent(), STORAGE_ARCHIVE_FILENAME);
-
-    // // rename corrupted file
-    // boolean renamed = f.renameTo(archiveFile);
-    // if (renamed) {
-    // System.out.println("Renamed corrupted storage to: " + archiveFile.getName());
-    // } else {
-    // System.out.println("Failed to rename corrupted storage file.");
-    // if (f.delete()) {
-    // System.out.println("Deleted corrupted storage file.");
-    // } else {
-    // System.out.println("Failed to delete corrupted storage file.");
-    // }
-    // }
-
-    // createStorageFile(f); // create new empty file with original file name
-    // taskList.clear(); // clear the task list as loading failed
-    // }
-
     // get user input and display them
     public static void handleUserInput(Scanner in) {
 
         ArrayList<Task> taskList = new ArrayList<Task>(); // arraylist of task object to store all task dynamically
-        // handleStorage(taskList); // load tasklist from storage if availble
         storage.handleStorage(taskList); // load tasklist from storage if availble
 
         // loop for user input
@@ -307,11 +204,17 @@ public class Pakipaki {
                     continue;
                 }
 
+                // // get the first word in the sentance
+                // String command = userInput.split(" ")[0].toLowerCase();
+                // // get everything after first word if there are more after first word
+                // String taskString = userInput.length() > command.length() ?
+                // userInput.substring(command.length()).trim()
+                // : "";
+
                 // get the first word in the sentance
-                String command = userInput.split(" ")[0].toLowerCase();
+                String command = Parser.getCommand(userInput);
                 // get everything after first word if there are more after first word
-                String taskString = userInput.length() > command.length() ? userInput.substring(command.length()).trim()
-                        : "";
+                String taskString = Parser.getArguments(userInput);
 
                 switch (command) {
                     case "list":
