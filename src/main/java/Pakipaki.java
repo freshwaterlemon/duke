@@ -12,10 +12,13 @@ public class Pakipaki {
 
     private static final Ui ui = new Ui();
     private static final Storage storage = new Storage(DEFAULT_STORAGE_FILEPATH);
+    private static final ArrayList<Task> taskList = new ArrayList<>();
 
     // find if task is inside the tasklist arraylist
-    private static Task findTaskByDescription(String description, ArrayList<Task> taskList, boolean doneStatus,
-            boolean findFromEnd) throws PakipakiException {
+    // private static Task findTaskByDescription(String description, ArrayList<Task>
+    // taskList, boolean doneStatus,
+    private static Task findTaskByDescription(String description, boolean doneStatus, boolean findFromEnd)
+            throws PakipakiException {
         // unmark from the end of list as newer task should be unmark first
         int startFrom, endAt, step;
 
@@ -48,7 +51,9 @@ public class Pakipaki {
      * find if task is inside the tasklist arraylist using
      * description or by using index
      */
-    private static Task findTaskByDescription(String description, ArrayList<Task> taskList) throws PakipakiException {
+    // private static Task findTaskByDescription(String description, ArrayList<Task>
+    // taskList) throws PakipakiException {
+    private static Task findTaskByDescription(String description) throws PakipakiException {
         try {
             int taskIndex = Integer.parseInt(description) - 1;
             if (taskIndex < 0 || taskIndex >= taskList.size()) {
@@ -69,9 +74,11 @@ public class Pakipaki {
     }
 
     // handle marking of task as done
-    private static void handleMark(String taskString, ArrayList<Task> taskList) {
+    // private static void handleMark(String taskString, ArrayList<Task> taskList) {
+    private static void handleMark(String taskString) {
         try {
-            Task task = findTaskByDescription(taskString, taskList, false, false);
+            // Task task = findTaskByDescription(taskString, taskList, false, false);
+            Task task = findTaskByDescription(taskString, false, false);
             task.markAsDone();
             System.out.println(("Alright! \"" + taskString + "\" mark as done!").indent(4));
             System.out.println((task + "\n").indent(8));
@@ -82,9 +89,12 @@ public class Pakipaki {
     }
 
     // handle unmarking of task as undone
-    private static void handleUnmark(String taskString, ArrayList<Task> taskList) {
+    // private static void handleUnmark(String taskString, ArrayList<Task> taskList)
+    // {
+    private static void handleUnmark(String taskString) {
         try {
-            Task task = findTaskByDescription(taskString, taskList, true, true);
+            // Task task = findTaskByDescription(taskString, taskList, true, true);
+            Task task = findTaskByDescription(taskString, true, true);
             task.markAsUndone();
             System.out.println(("Alright! \"" + taskString + "\" unmark.").indent(4));
             System.out.println((task + "\n").indent(8));
@@ -95,7 +105,8 @@ public class Pakipaki {
     }
 
     // add task object to arraylist of task and display confirmation message
-    private static void addTask(Task task, ArrayList<Task> taskList) {
+    // private static void addTask(Task task, ArrayList<Task> taskList) {
+    private static void addTask(Task task) {
         taskList.add(task);
         System.out.println(("Got it, task added to your task list.").indent(4));
         System.out.println((task.toString() + "\n").indent(8));
@@ -105,31 +116,27 @@ public class Pakipaki {
     }
 
     // handle to do
-    private static void handleToDo(String description, ArrayList<Task> taskList) {
+    // private static void handleToDo(String description, ArrayList<Task> taskList)
+    // {
+    private static void handleToDo(String description) {
         // addTask(new Todo(description), taskList);
         try {
             Task todoTask = Parser.parseTodo(description);
-            addTask(todoTask, taskList);
+            // addTask(todoTask, taskList);
+            addTask(todoTask);
         } catch (Exception e) {
             ui.printMessage(("Error parsing todo: " + e.getMessage()).indent(4));
         }
     }
 
     // handle deadline
-    private static void handleDeadline(String description, ArrayList<Task> taskList) {
-        // int findIndex = description.indexOf("/by");
-        // if (findIndex == -1) {
-        // System.out.println(("Oops! The deadline detail is missing").indent(4));
-        // System.out.println(("Please use the format: deadline <task> /by
-        // <date/time>").indent(4));
-        // return;
-        // }
-        // String deadlineDescription = description.substring(0, findIndex).trim();
-        // String deadlineTiming = description.substring(findIndex + 3).trim();
-        // addTask(new Deadline(deadlineDescription, deadlineTiming), taskList);
+    // private static void handleDeadline(String description, ArrayList<Task>
+    // taskList) {
+    private static void handleDeadline(String description) {
         try {
             Task deadlineTask = Parser.parseDeadline(description);
-            addTask(deadlineTask, taskList);
+            // addTask(deadlineTask, taskList);
+            addTask(deadlineTask);
         } catch (Exception e) {
             ui.printMessage(("Error parsing deadline: " + e.getMessage()).indent(4));
             ui.printMessage(("Please use the format: deadline <task> /by <date/time>").indent(4));
@@ -137,26 +144,13 @@ public class Pakipaki {
     }
 
     // handle event
-    private static void handleEvent(String description, ArrayList<Task> taskList) {
-        // int findIndexFrom = description.indexOf("/from");
-        // int findIndexTo = description.indexOf("/to");
-        // // user must include both from and to
-        // if (findIndexFrom == -1 || findIndexTo == -1 || findIndexFrom > findIndexTo)
-        // {
-        // System.out.println(("Oops! The event detail is missing").indent(4));
-        // System.out.println(("Please use the format: event <task> /from <date/time>
-        // /to <date/time>").indent(4));
-        // return;
-        // }
-        // String eventDescription = description.substring(0, findIndexFrom).trim();
-        // String eventTimingFrom = description.substring(findIndexFrom + 5,
-        // findIndexTo).trim();
-        // String eventTimingTo = description.substring(findIndexTo + 3).trim();
-        // addTask(new Event(eventDescription, eventTimingFrom, eventTimingTo),
-        // taskList);
+    // private static void handleEvent(String description, ArrayList<Task> taskList)
+    // {
+    private static void handleEvent(String description) {
         try {
             Task eventTask = Parser.parseEvent(description);
-            addTask(eventTask, taskList);
+            // addTask(eventTask, taskList);
+            addTask(eventTask);
         } catch (Exception e) {
             ui.printMessage(("Error parsing event: " + e.getMessage()).indent(4));
             ui.printMessage(("Please use the format: event <task> /from <date/time> /to <date/time>").indent(4));
@@ -164,7 +158,8 @@ public class Pakipaki {
     }
 
     // delete task object from arraylist of task and display confirmation message
-    private static void deleteTask(Task task, ArrayList<Task> taskList) {
+    // private static void deleteTask(Task task, ArrayList<Task> taskList) {
+    private static void deleteTask(Task task) {
         taskList.remove(task);
         System.out.println(("Got it, task removed from your task list.").indent(4));
         System.out.println((task.toString() + "\n").indent(8));
@@ -174,9 +169,13 @@ public class Pakipaki {
     }
 
     // handle delete
-    private static void handleDelete(String description, ArrayList<Task> taskList) throws PakipakiException {
-        Task task = findTaskByDescription(description, taskList);
-        deleteTask(task, taskList);
+    // private static void handleDelete(String description, ArrayList<Task>
+    // taskList) throws PakipakiException {
+    private static void handleDelete(String description) throws PakipakiException {
+        // Task task = findTaskByDescription(description, taskList);
+        // deleteTask(task, taskList);
+        Task task = findTaskByDescription(description);
+        deleteTask(task);
     }
 
     // check if details after valid command is missing
@@ -189,7 +188,8 @@ public class Pakipaki {
     // get user input and display them
     public static void handleUserInput(Scanner in) {
 
-        ArrayList<Task> taskList = new ArrayList<Task>(); // arraylist of task object to store all task dynamically
+        // ArrayList<Task> taskList = new ArrayList<Task>(); // arraylist of task object
+        // to store all task dynamically
         storage.handleStorage(taskList); // load tasklist from storage if availble
 
         // loop for user input
@@ -203,13 +203,6 @@ public class Pakipaki {
                     System.out.println(("Oops! You didn't type anything. Go ahead, give me a task!\n").indent(4));
                     continue;
                 }
-
-                // // get the first word in the sentance
-                // String command = userInput.split(" ")[0].toLowerCase();
-                // // get everything after first word if there are more after first word
-                // String taskString = userInput.length() > command.length() ?
-                // userInput.substring(command.length()).trim()
-                // : "";
 
                 // get the first word in the sentance
                 String command = Parser.getCommand(userInput);
@@ -227,32 +220,38 @@ public class Pakipaki {
 
                     case "mark":
                         validateCommandDetails(command, taskString);
-                        handleMark(taskString, taskList);
+                        // handleMark(taskString, taskList);
+                        handleMark(taskString);
                         break;
 
                     case "unmark":
                         validateCommandDetails(command, taskString);
-                        handleUnmark(taskString, taskList);
+                        // handleUnmark(taskString, taskList);
+                        handleUnmark(taskString);
                         break;
 
                     case "todo":
                         validateCommandDetails(command, taskString);
-                        handleToDo(taskString, taskList);
+                        // handleToDo(taskString, taskList);
+                        handleToDo(taskString);
                         break;
 
                     case "deadline":
                         validateCommandDetails(command, taskString);
-                        handleDeadline(taskString, taskList);
+                        // handleDeadline(taskString, taskList);
+                        handleDeadline(taskString);
                         break;
 
                     case "event":
                         validateCommandDetails(command, taskString);
-                        handleEvent(taskString, taskList);
+                        // handleEvent(taskString, taskList);
+                        handleEvent(taskString);
                         break;
 
                     case "delete":
                         validateCommandDetails(command, taskString);
-                        handleDelete(taskString, taskList);
+                        // handleDelete(taskString, taskList);
+                        handleDelete(taskString);
                         break;
 
                     default:
