@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import task.Task;
 
 public class Ui {
-    private static final String BOTNAME = "PakiPaki";
+    private static final String BOTNAME = "Nerunerune";
     private static final String HORIZONTAL_LINE = "____________________________________________________________";
     private static final String USERGUIDEMSG = """
             Task Commands Overview:

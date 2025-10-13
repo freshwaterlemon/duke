@@ -6,7 +6,7 @@ import storage.Storage;
 
 import tasklist.TaskList;
 
-public class Pakipaki {
+public class Nerunerune {
     private static final String DEFAULT_STORAGE_FILEPATH = "data/tasks.txt";
 
     private static final Ui ui = new Ui();

@@ -2,7 +2,7 @@ package tasklist;
 
 import java.util.ArrayList;
 
-import exception.PakipakiException;
+import exception.NeruneruneException;
 import parser.Parser;
 import storage.Storage;
 import task.Task;
@@ -53,7 +53,7 @@ public class TaskList {
             task.markAsDone();
             ui.printMessage(("Alright! \"" + taskString + "\" mark as done!").indent(4));
             ui.printMessage((task + "\n").indent(8));
-        } catch (PakipakiException e) {
+        } catch (NeruneruneException e) {
             ui.printMessage((e.getMessage() + "\n").indent(4));
         }
     }
@@ -65,13 +65,13 @@ public class TaskList {
             task.markAsUndone();
             ui.printMessage(("Alright! \"" + taskString + "\" unmark.").indent(4));
             ui.printMessage((task + "\n").indent(8));
-        } catch (PakipakiException e) {
+        } catch (NeruneruneException e) {
             ui.printMessage((e.getMessage() + "\n").indent(4));
         }
     }
 
     // delete task object from arraylist of task and display confirmation message
-    public void deleteTask(String description) throws PakipakiException {
+    public void deleteTask(String description) throws NeruneruneException {
         try {
             Task task = findTaskByDescription(description);
             taskList.remove(task);
@@ -79,14 +79,14 @@ public class TaskList {
             ui.printMessage((task.toString() + "\n").indent(8));
             ui.printMessage(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
 
-        } catch (PakipakiException e) {
+        } catch (NeruneruneException e) {
             ui.printMessage(e.getMessage());
         }
     }
 
     // find if task is inside the tasklist arraylist
     private Task findTaskByDescription(String description, boolean doneStatus, boolean findFromEnd)
-            throws PakipakiException {
+            throws NeruneruneException {
         // unmark from the end of list as newer task should be unmark first
 
         // find from end if true
@@ -103,7 +103,7 @@ public class TaskList {
             }
         }
         // return null;
-        throw new PakipakiException(
+        throw new NeruneruneException(
                 "Task with description \"" + description + "\" not found.");
 
     }
@@ -112,11 +112,11 @@ public class TaskList {
      * find if task is inside the tasklist arraylist using
      * description or by using index
      */
-    private Task findTaskByDescription(String description) throws PakipakiException {
+    private Task findTaskByDescription(String description) throws NeruneruneException {
         try {
             int taskIndex = Integer.parseInt(description) - 1;
             if (taskIndex < 0 || taskIndex >= taskList.size()) {
-                throw new PakipakiException("No task number: " + (taskIndex + 1));
+                throw new NeruneruneException("No task number: " + (taskIndex + 1));
             }
             return taskList.get(taskIndex);
         } catch (NumberFormatException e) {
@@ -129,7 +129,7 @@ public class TaskList {
             }
         }
 
-        throw new PakipakiException("Task with description \"" + description + "\" not found.");
+        throw new NeruneruneException("Task with description \"" + description + "\" not found.");
     }
 
     // handle to do
