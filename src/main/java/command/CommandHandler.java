@@ -27,7 +27,7 @@ public class CommandHandler {
         while (true) {
             try {
 
-                System.out.println();
+                ui.printLine();
                 String userInput = in.nextLine().trim();
 
                 if (CommandValidator.checkAndPrintIfEmpty(userInput)) {
@@ -64,9 +64,9 @@ public class CommandHandler {
                         throw new PakipakiException(unknownCommandMsg);
                 }
             } catch (PakipakiException e) {
-                System.out.println((e.getMessage()).indent(4));
+                ui.printMessage((e.getMessage()).indent(4));
             } catch (Exception e) {
-                System.out.println(("Something went wrong!: " + e.getMessage()).indent(4));
+                ui.printMessage(("Something went wrong!: " + e.getMessage()).indent(4));
             }
         }
     }

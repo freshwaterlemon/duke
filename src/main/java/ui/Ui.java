@@ -20,7 +20,7 @@ public class Ui {
 
     // print the horizontal decoration line for seperation
     private void printHorzLine() {
-        System.out.println(HORIZONTAL_LINE);
+        printMessage(HORIZONTAL_LINE);
     }
 
     // print start message
@@ -31,27 +31,27 @@ public class Ui {
 
                 %s
                 """.formatted(BOTNAME, USERGUIDEMSG);
-        System.out.println(message);
+        printMessage(message);
         printHorzLine();
     }
 
     // print end message
     public void endMsg() {
-        System.out.println(("Thank you for chatting with me! Until next time!").indent(4));
+        printMessage(("Thank you for chatting with me! Until next time!").indent(4));
         printHorzLine();
     }
 
     // print items inside task list and display message if the list is empty.
     public void printTaskList(ArrayList<Task> taskList) {
         if (taskList.isEmpty()) {
-            System.out.println(("Your task list is empty! Add something and I'll keep it ready for you!").indent(4));
+            printMessage(("Your task list is empty! Add something and I'll keep it ready for you!").indent(4));
         } else {
-            System.out.println(
+            printMessage(
                     ("Here's what's on your task list so far: " + "(" + taskList.size() + " in total)").indent(4));
             for (int i = 0; i < taskList.size(); i++) {
                 System.out.println((((i + 1) + ". " + taskList.get(i)).indent(8)));
             }
-            System.out.println();
+            printLine();
         }
     }
 
@@ -61,5 +61,9 @@ public class Ui {
 
     public void printMessage(String message) {
         System.out.println(message);
+    }
+
+    public void printLine() {
+        System.out.println();
     }
 }

@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import task.Task;
 
 public class Storage {
@@ -82,42 +81,6 @@ public class Storage {
             handleCorruptedFile(f, taskList);
         }
     }
-
-    // // create task object from a single line from storage file
-    // private Task createTaskFromLine(String line) throws IOException {
-    // String[] parts = line.split(" \\| "); // split by '|'
-
-    // if (parts.length < 3) { // check
-    // throw new IOException("Corrupted line: " + line);
-    // }
-
-    // String taskType = parts[0];
-    // boolean isDone = parts[1].equals("1"); // true if 1 -> mark with X
-    // String description = parts[2];
-
-    // switch (taskType) {
-    // case "T": // todo
-    // if (parts.length > 3)
-    // throw new IOException("Corrupted todo line: " + line);
-    // return new Todo(description, isDone);
-
-    // case "D": // deadline
-    // if (parts.length < 4)
-    // throw new IOException("Corrupted deadline line: " + line);
-    // String by = parts[3];
-    // return new Deadline(description, by, isDone);
-
-    // case "E": // event
-    // if (parts.length < 5)
-    // throw new IOException("Corrupted event line: " + line);
-    // String from = parts[3];
-    // String to = parts[4];
-    // return new Event(description, from, to, isDone);
-
-    // default:
-    // throw new IOException("Unknown task type in line: " + line);
-    // }
-    // }
 
     // handle corrupted file
     private static void handleCorruptedFile(File f, ArrayList<Task> taskList) {

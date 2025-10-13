@@ -8,9 +8,13 @@ public class CommandValidator {
         }
     }
 
+    public static boolean isUserInputEmpty(String userInput) {
+        return userInput == null || userInput.trim().isEmpty();
+    }
+
     // validate if the user input is empty
     public static boolean checkAndPrintIfEmpty(String userInput) {
-        if (userInput == null || userInput.trim().isEmpty()) {
+        if (isUserInputEmpty(userInput)) {
             System.out.println(("Oops! You didn't type anything. Go ahead, give me a task!\n").indent(4));
             return true; // input is empty, notification printed
         }
