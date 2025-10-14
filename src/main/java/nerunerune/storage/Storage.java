@@ -67,8 +67,6 @@ public class Storage {
         try (Scanner s = new Scanner(f)) { // close scanner after done
             while (s.hasNext()) {
                 String line = s.nextLine().trim();
-                // Task task = createTaskFromLine(line);
-                // taskList.add(task);
                 try {
                     Task task = Parser.parseTaskLine(line);
                     taskList.add(task);

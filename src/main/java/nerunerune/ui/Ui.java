@@ -7,7 +7,7 @@ public class Ui {
     private static final String BOTNAME = "Nerunerune";
     private static final String HORIZONTAL_LINE = "____________________________________________________________";
     private static final String USERGUIDEMSG = """
-            Task Commands Overview:
+            List of Task Commands Available:
 
                 1. Type 'list' to see all your tasks.
                 2. Use 'todo <task>' to add a simple task.
@@ -15,8 +15,9 @@ public class Ui {
                 4. Use 'event <task> /from <start date/time> /to <end date/time>' to add an event.
                 5. Use 'mark <task>' to mark a task as done.
                 6. Use 'unmark <task>' to mark a task as not done.
-                7. Type 'bye' to exit the chat.
-            """; // add delete command later
+                7. Use 'delete' <task> or <task number> to delete a task from list and storage.
+                8. Type 'bye' to exit the chat.
+            """;
 
     // print the horizontal decoration line for seperation
     private void printHorzLine() {
@@ -26,12 +27,14 @@ public class Ui {
     // print start message
     public void startMsg() {
         printHorzLine();
-        String message = """
-                Hello! I'm %s, your friendly assistant here to help you manage your tasks.
+        // String message = """
+        // Hello! I'm %s, your friendly assistant here to help you manage your tasks.
 
-                %s
-                """.formatted(BOTNAME, USERGUIDEMSG);
-        printMessage(message);
+        // %s
+        // """.formatted(BOTNAME, USERGUIDEMSG);
+        printMessage(
+                String.format("Hello! I'm %s, your friendly assistant here to help you manage your tasks.", BOTNAME));
+        printMessage("Type \"command\" to see all availble command");
         printHorzLine();
     }
 
