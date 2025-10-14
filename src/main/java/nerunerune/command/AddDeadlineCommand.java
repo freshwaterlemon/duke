@@ -1,5 +1,6 @@
 package command;
 
+import exception.NeruneruneException;
 import storage.Storage;
 import tasklist.TaskList;
 import ui.Ui;
@@ -12,7 +13,7 @@ public class AddDeadlineCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws NeruneruneException {
         tasks.addDeadline(taskString);
         storage.saveTasksToStorage(tasks.getTaskList());
     }

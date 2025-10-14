@@ -27,34 +27,28 @@ public class Ui {
     // print start message
     public void startMsg() {
         printHorzLine();
-        // String message = """
-        // Hello! I'm %s, your friendly assistant here to help you manage your tasks.
-
-        // %s
-        // """.formatted(BOTNAME, USERGUIDEMSG);
         printMessage(
-                String.format("Hello! I'm %s, your friendly assistant here to help you manage your tasks.", BOTNAME));
+                String.format("Hello! I'm %s, here to help you manage your tasks.", BOTNAME));
         printMessage("Type \"command\" to see all availble command");
         printHorzLine();
     }
 
     // print end message
     public void endMsg() {
-        printMessage(("Thank you for chatting with me! Until next time!").indent(4));
+        printMessage(("Until next time!").indent(4));
         printHorzLine();
     }
 
     // print items inside task list and display message if the list is empty.
     public void printTaskList(ArrayList<Task> taskList) {
         if (taskList.isEmpty()) {
-            printMessage(("Your task list is empty! Add something and I'll keep it ready for you!").indent(4));
+            printMessage(("Your task list is empty!").indent(4));
         } else {
             printMessage(
                     ("Here's what's on your task list so far: " + "(" + taskList.size() + " in total)").indent(4));
             for (int i = 0; i < taskList.size(); i++) {
                 System.out.println((((i + 1) + ". " + taskList.get(i)).indent(8)));
             }
-            printLine();
         }
     }
 

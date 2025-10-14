@@ -1,5 +1,6 @@
 package tasklist;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import exception.NeruneruneException;
@@ -20,12 +21,12 @@ public class TaskList {
     }
 
     // load tasks from storage
-    public void loadTasks() {
+    public void loadTasks() throws NeruneruneException, IOException {
         storage.handleStorage(taskList);
     }
 
     // save the current task list
-    public void saveTasks() {
+    public void saveTasks() throws NeruneruneException, IOException {
         storage.saveTasksToStorage(getTaskList());
     }
 
@@ -71,7 +72,7 @@ public class TaskList {
     }
 
     // delete task object from arraylist of task and display confirmation message
-    public void deleteTask(String description) throws NeruneruneException {
+    public void deleteTask(String description) {
         try {
             Task task = findTaskByDescription(description);
             taskList.remove(task);

@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 import command.Command;
 import exception.NeruneruneException;
@@ -9,9 +10,6 @@ import tasklist.TaskList;
 public class Nerunerune {
     private static final String DEFAULT_STORAGE_FILEPATH = "data/tasks.txt";
 
-    // private static final Ui ui = new Ui();
-    // private static final Storage storage = new Storage(DEFAULT_STORAGE_FILEPATH);
-    // private static final TaskList taskList = new TaskList(storage, ui);
     private final Ui ui;
     private final Storage storage;
     private final TaskList taskList;
@@ -23,19 +21,16 @@ public class Nerunerune {
     }
 
     public static void main(String[] args) {
-        // try (Scanner in = new Scanner(System.in)) { // close scanner
-        // ui.startMsg();
-        // taskList.loadTasks();
-        // CommandHandler processor = new CommandHandler(ui, taskList, storage);
-        // processor.processUserCommands(in);
-        // }
         new Nerunerune(DEFAULT_STORAGE_FILEPATH).run();
-
     }
 
     public void run() {
         ui.startMsg();
-        taskList.loadTasks();
+        try {
+            taskList.loadTasks();
+        } catch (NeruneruneException | IOException e) {
+            ui.printMessage("Storage error: " + e.getMessage());
+        }
 
         boolean isExit = false;
         try (Scanner in = new Scanner(System.in)) {
