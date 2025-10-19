@@ -12,7 +12,9 @@ public class Ui {
                 1. Type 'list' to see all your tasks.
                 2. Use 'todo <task>' to add a simple task.
                 3. Use 'deadline <task> /by <date/time>' to add a task with a deadline.
+                    - Date/time format: DD-MM-YYYY HHMM (e.g. 01-01-2025 1800)
                 4. Use 'event <task> /from <start date/time> /to <end date/time>' to add an event.
+                    - Date/time format: DD-MM-YYYY HHMM (e.g. 01-01-2025 1800)
                 5. Use 'mark <task>' to mark a task as done.
                 6. Use 'unmark <task>' to mark a task as not done.
                 7. Use 'delete' <task> or <task number> to delete a task from list and storage.
