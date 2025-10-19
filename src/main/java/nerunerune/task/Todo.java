@@ -1,4 +1,5 @@
 package task;
+
 public class Todo extends Task {
 
     public Todo(String description) {
@@ -16,11 +17,12 @@ public class Todo extends Task {
 
     @Override
     public String toString() {
-        return "[T]" + "[" + getStatusIcon() + "] " + description;
+        return "[T]" + "[" + getStatusIcon() + "] " + getDescription();
     }
 
     @Override
     public String toStorageString() {
-        return "T | " + (isDone ? "1" : "0") + " | " + description;
+        return String.format("T | %d | %s", getIsDone() ? 1 : 0, getDescription());
     }
+
 }

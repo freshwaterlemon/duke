@@ -7,17 +7,9 @@ import task.Todo;
 import task.Deadline;
 import task.Event;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
-import command.PrintTaskListCommand;
-import command.ExitCommand;
-import command.MarkCommand;
-import command.UnmarkCommand;
-import command.AddTodoCommand;
-import command.Command;
-import command.AddDeadlineCommand;
-import command.AddEventCommand;
-import command.DeleteCommand;
-import command.ViewAllCommand;
+import command.*;
 import exception.NeruneruneException;
 
 public class Parser {
@@ -35,17 +27,20 @@ public class Parser {
         return new Todo(description);
     }
 
-    public static Task parseDeadline(String description) throws IOException {
+    public static Task parseDeadline(String description) throws IOException, NeruneruneException {
         int findIndex = description.indexOf("/by");
         if (findIndex == -1) {
             throw new IOException("Deadline must contain '/by'");
         }
         String deadlineDescription = description.substring(0, findIndex).trim();
         String deadlineTiming = description.substring(findIndex + 3).trim();
-        return new Deadline(deadlineDescription, deadlineTiming);
+
+        // create dates from strings
+        LocalDateTime byTiming = DateTimeParser.parseDateTime(deadlineTiming);
+        return new Deadline(deadlineDescription, byTiming);
     }
 
-    public static Task parseEvent(String description) throws IOException {
+    public static Task parseEvent(String description) throws IOException, NeruneruneException {
         int findIndexFrom = description.indexOf("/from");
         int findIndexTo = description.indexOf("/to");
         if (findIndexFrom == -1 || findIndexTo == -1 || findIndexFrom > findIndexTo) {
@@ -54,10 +49,14 @@ public class Parser {
         String eventDescription = description.substring(0, findIndexFrom).trim();
         String eventTimingFrom = description.substring(findIndexFrom + 5, findIndexTo).trim();
         String eventTimingTo = description.substring(findIndexTo + 3).trim();
-        return new Event(eventDescription, eventTimingFrom, eventTimingTo);
+
+        // create dates from strings
+        LocalDateTime fromTiming = DateTimeParser.parseDateTime(eventTimingFrom);
+        LocalDateTime toTiming = DateTimeParser.parseDateTime(eventTimingTo);
+        return new Event(eventDescription, fromTiming, toTiming);
     }
 
-    public static Task parseTaskLine(String line) throws IOException {
+    public static Task parseTaskLine(String line) throws IOException, NeruneruneException {
         String[] parts = line.split(" \\| "); // split by '|'
         if (parts.length < 3) { // check
             throw new IOException("Corrupted line: " + line);
@@ -74,11 +73,14 @@ public class Parser {
             case "D": // deadline
                 if (parts.length < 4)
                     throw new IOException("Corrupted deadline line: " + line);
-                return new Deadline(description, parts[3], isDone);
+                LocalDateTime deadlineBy = DateTimeParser.parseStorageDateTime(parts[3]);
+                return new Deadline(description, deadlineBy, isDone);
             case "E": // event
                 if (parts.length < 5)
                     throw new IOException("Corrupted event line: " + line);
-                return new Event(description, parts[3], parts[4], isDone);
+                LocalDateTime eventFrom = DateTimeParser.parseStorageDateTime(parts[3]);
+                LocalDateTime eventTo = DateTimeParser.parseStorageDateTime(parts[4]);
+                return new Event(description, eventFrom, eventTo, isDone);
             default:
                 throw new IOException("Unknown task type in line: " + line);
         }

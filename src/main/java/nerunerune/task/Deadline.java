@@ -1,8 +1,13 @@
 package task;
-public class Deadline extends Task {
-    private String byTiming;
 
-    public Deadline(String deadlineDescription, String byTiming) {
+import java.time.LocalDateTime;
+
+import parser.DateTimeParser;
+
+public class Deadline extends Task {
+    private LocalDateTime byTiming;
+
+    public Deadline(String deadlineDescription, LocalDateTime byTiming) {
         super(deadlineDescription);
         this.byTiming = byTiming;
     }
@@ -11,7 +16,7 @@ public class Deadline extends Task {
         super(deadlineDescription, isDone);
     }
 
-    public Deadline(String deadlineDescription, String byTiming, boolean isDone) {
+    public Deadline(String deadlineDescription, LocalDateTime byTiming, boolean isDone) {
         super(deadlineDescription, isDone);
         this.byTiming = byTiming;
     }
@@ -22,13 +27,19 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
-        String formattedDeadlineDescription = description + " (by: " + byTiming + ")";
-        // return "[D]" + "[" + getStatusIcon() + "] " + description;
-        return "[D]" + "[" + getStatusIcon() + "] " + formattedDeadlineDescription;
+        return "[D]" + "[" + getStatusIcon() + "] " + getDescription() + " (by: " + DateTimeParser.formatForDisplay(byTiming)
+                + ")";
     }
 
     @Override
     public String toStorageString() {
-        return "D | " + (isDone ? "1" : "0") + " | " + description + " | " + byTiming;
+        return String.format("D | %d | %s | %s",
+                getIsDone() ? 1 : 0,
+                getDescription(),
+                DateTimeParser.formatForStorage(byTiming));
+    }
+
+    public LocalDateTime getDateTime() {
+        return byTiming;
     }
 }

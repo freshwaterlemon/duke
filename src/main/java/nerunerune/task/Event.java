@@ -1,18 +1,25 @@
 package task;
-public class Event extends Task {
-    private String fromTiming;
-    private String toTiming;
 
-    public Event(String eventDescription, String eventFromTiming, String eventToTiming, boolean isDone) {
+import java.time.LocalDateTime;
+
+import parser.DateTimeParser;
+import parser.DateTimeParser;
+
+public class Event extends Task {
+    private LocalDateTime fromTiming;
+    private LocalDateTime toTiming;
+
+    public Event(String eventDescription, LocalDateTime eventFromTiming, LocalDateTime eventToTiming, boolean isDone) {
         super(eventDescription, isDone);
         this.fromTiming = eventFromTiming;
         this.toTiming = eventToTiming;
     }
 
-    public Event(String eventDescription, String eventFromTiming, String eventToTiming) {
+    public Event(String eventDescription, LocalDateTime eventFromTiming, LocalDateTime eventToTiming) {
         super(eventDescription);
         this.fromTiming = eventFromTiming;
         this.toTiming = eventToTiming;
+
     }
 
     public Event(String eventDescription, boolean isDone) {
@@ -25,14 +32,16 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        String formattedEventDescription = description + " (from: " + fromTiming + " to: " + toTiming
-                + ")";
-        // return "[E]" + "[" + getStatusIcon() + "] " + description;
-        return "[E]" + "[" + getStatusIcon() + "] " + formattedEventDescription;
+        return "[E]" + "[" + getStatusIcon() + "] " + getDescription() + " (from: "
+                + DateTimeParser.formatForDisplay(fromTiming) + " to: " + DateTimeParser.formatForDisplay(toTiming) + ")";
     }
 
     @Override
     public String toStorageString() {
-        return "E | " + (isDone ? "1" : "0") + " | " + description + " | " + fromTiming + " | " + toTiming;
+        return String.format("E | %d | %s | %s | %s",
+                getIsDone() ? 1 : 0,
+                getDescription(),
+                DateTimeParser.formatForStorage(fromTiming),
+                DateTimeParser.formatForStorage(toTiming));
     }
 }
