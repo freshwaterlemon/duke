@@ -9,6 +9,9 @@ import java.util.Scanner;
 
 import exception.NeruneruneException;
 import task.Task;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class Storage {
     private String filepath;
@@ -31,8 +34,9 @@ public class Storage {
     // create file
     public static void createStorageFile(File f) throws NeruneruneException {
         try {
-            f.getParentFile().mkdirs();
-            f.createNewFile();
+            File parent = f.getParentFile();
+            if (!parent.exists()) parent.mkdirs();
+            if (!f.exists()) f.createNewFile();
             System.out.println("Created new storage file: " + f.getName());
         } catch (IOException e) {
             throw new NeruneruneException("An error occurred while creating storage file: " + e.getMessage());
@@ -82,15 +86,26 @@ public class Storage {
         File archiveFile = new File(f.getParent(), "tasksArchive.txt");
 
         // rename corrupted file
-        boolean renamed = f.renameTo(archiveFile);
-        if (renamed) {
-            System.out.println("Renamed corrupted storage file to: " + archiveFile.getName());
-        } else {
-            System.out.println("Failed to rename corrupted storage file.");
+//        boolean renamed = f.renameTo(archiveFile);
+//        if (renamed) {
+//            System.out.println("Renamed corrupted storage file to: " + archiveFile.getName());
+//        } else {
+//            System.out.println("Failed to rename corrupted storage file.");
+//            if (f.delete()) {
+//                System.out.println("Deleted corrupted storage file.");
+//            } else {
+//                System.out.println("Failed to delete corrupted storage file.");
+//            }
+//        }
+        try {
+            Files.move(f.toPath(), archiveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Renamed corrupted file to: " + archiveFile.getName());
+        } catch (IOException e) {
+            System.out.println("Rename failed: " + e.getMessage());
             if (f.delete()) {
-                System.out.println("Deleted corrupted storage file.");
+                System.out.println("Deleted corrupted file.");
             } else {
-                System.out.println("Failed to delete corrupted storage file.");
+                System.out.println("Failed to delete corrupted file.");
             }
         }
         createStorageFile(f);
