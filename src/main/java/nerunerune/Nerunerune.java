@@ -7,6 +7,11 @@ import ui.Ui;
 import storage.Storage;
 import tasklist.TaskList;
 
+/**
+ * Main class for the Nerunerune application.
+ * Manages the overall program flow including initializing components,
+ * loading tasks from storage, and processing user commands.
+ */
 public class Nerunerune {
     private static final String DEFAULT_STORAGE_FILEPATH = "data/tasks.txt";
 
@@ -14,16 +19,34 @@ public class Nerunerune {
     private final Storage storage;
     private final TaskList taskList;
 
+    /**
+     * Constructs a Nerunerune instance with the specified storage file path.
+     * Initializes the UI, storage handler, and task list.
+     *
+     * @param filePath the file path where tasks are stored
+     */
     public Nerunerune(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
         taskList = new TaskList(storage, ui);
     }
 
+    /**
+     * Entry point of the application.
+     * Creates a new Nerunerune instance with the default storage file path and runs it.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         new Nerunerune(DEFAULT_STORAGE_FILEPATH).run();
     }
 
+    /**
+     * Runs the main loop of the application.
+     * Starts the UI, loads tasks, and continually accepts user input commands
+     * until the exit command is given.
+     * Handles exceptions by displaying appropriate messages.
+     */
     public void run() {
         ui.startMsg();
         try {

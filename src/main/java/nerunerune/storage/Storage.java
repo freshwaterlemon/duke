@@ -13,14 +13,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * Manages reading and writing tasks to persistent storage.
+ * Handles file creation, loading tasks from file, saving tasks to file,
+ * and recovering from corrupted storage files by archiving or deletion.
+ */
 public class Storage {
     private String filepath;
 
+    /**
+     * Constructs a Storage handler with the specified file path.
+     *
+     * @param filepath the path to the local tasks storage file
+     */
     public Storage(String filepath) {
         this.filepath = filepath;
     }
 
-    // file loading and storage
+    /**
+     * Loads tasks from storage file if it exists, or creates a new storage file otherwise.
+     *
+     * @param taskList the list to populate with loaded tasks
+     * @throws NeruneruneException if creating or reading storage files fails
+     * @throws IOException if an IO error occurs reading the file
+     */
     public void handleStorage(ArrayList<Task> taskList) throws NeruneruneException, IOException {
         File f = new File(filepath);
         if (f.exists()) {
@@ -31,7 +47,12 @@ public class Storage {
         }
     }
 
-    // create file
+    /**
+     * Creates a storage file and necessary parent directories if they don't exist.
+     *
+     * @param f the file to create
+     * @throws NeruneruneException if file creation fails
+     */
     public static void createStorageFile(File f) throws NeruneruneException {
         try {
             File parent = f.getParentFile();
@@ -43,7 +64,13 @@ public class Storage {
         }
     }
 
-    // write to storage file
+    /**
+     * Writes the given text content to the specified file.
+     *
+     * @param f the file to write to
+     * @param textToAdd the text content to write
+     * @throws NeruneruneException if writing to file fails
+     */
     public void writeStorageFile(File f, String textToAdd) throws NeruneruneException {
         try {
             FileWriter fw = new FileWriter(f);
@@ -54,7 +81,12 @@ public class Storage {
         }
     }
 
-    // save task list to storage txt file
+    /**
+     * Saves the current task list to the storage file.
+     *
+     * @param taskList the list of tasks to save
+     * @throws NeruneruneException if writing to file fails
+     */
     public void saveTasksToStorage(ArrayList<Task> taskList) throws NeruneruneException {
         File f = new File(filepath);
         StringBuilder sb = new StringBuilder();
@@ -64,7 +96,15 @@ public class Storage {
         writeStorageFile(f, sb.toString());
     }
 
-    // read from tasks.txt in storage and add them to tasklist
+    /**
+     * Reads tasks from the storage file and adds them to the task list.
+     * On encountering corrupted lines, archives or deletes the file and clears the task list.
+     *
+     * @param f storage file to read from
+     * @param taskList task list to populate
+     * @throws NeruneruneException if corrupted file handling fails
+     * @throws IOException if reading the file fails
+     */
     public void readStorageFile(File f, ArrayList<Task> taskList) throws NeruneruneException, IOException {
         try (Scanner s = new Scanner(f)) { // close scanner after done
             while (s.hasNext()) {
@@ -81,22 +121,17 @@ public class Storage {
 
     }
 
-    // handle corrupted file
+    /**
+     * Handles corrupted storage files by renaming them to an archive,
+     * or deleting if renaming fails, then recreating the storage file and clearing the task list.
+     *
+     * @param f the corrupted storage file
+     * @param taskList the task list to clear after corruption
+     * @throws NeruneruneException if file recreation fails
+     */
     private static void handleCorruptedFile(File f, ArrayList<Task> taskList) throws NeruneruneException {
         File archiveFile = new File(f.getParent(), "tasksArchive.txt");
 
-        // rename corrupted file
-//        boolean renamed = f.renameTo(archiveFile);
-//        if (renamed) {
-//            System.out.println("Renamed corrupted storage file to: " + archiveFile.getName());
-//        } else {
-//            System.out.println("Failed to rename corrupted storage file.");
-//            if (f.delete()) {
-//                System.out.println("Deleted corrupted storage file.");
-//            } else {
-//                System.out.println("Failed to delete corrupted storage file.");
-//            }
-//        }
         try {
             Files.move(f.toPath(), archiveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Renamed corrupted file to: " + archiveFile.getName());

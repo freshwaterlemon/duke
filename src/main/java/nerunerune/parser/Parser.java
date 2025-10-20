@@ -12,21 +12,52 @@ import java.time.LocalDateTime;
 import command.*;
 import exception.NeruneruneException;
 
+/**
+ * Provides methods to parse user input into commands or tasks.
+ * Handle extraction and validation of command keywords and arguments,
+ * and translates them into corresponding Command objects or Task instances.
+ */
 public class Parser {
 
+    /**
+     * Extracts the command keyword from the user's input string.
+     *
+     * @param userInput the full input string from the user
+     * @return the command word in lowercase (e.g. todo, list, mark)
+     */
     public static String getCommand(String userInput) {
         return userInput.split(" ")[0].toLowerCase();
     }
 
+    /**
+     * Extracts the argument portion of the user's input string after the command word.
+     *
+     * @param userInput the full input string from the user
+     * @return the trimmed argument string, or empty string if none
+     */
     public static String getArguments(String userInput) {
         String command = getCommand(userInput);
         return userInput.length() > command.length() ? userInput.substring(command.length()).trim() : "";
     }
 
+    /**
+     * Parses a todo task description into a Todo object.
+     *
+     * @param description the description of the todo task
+     * @return new Todo task instance
+     */
     public static Task parseTodo(String description) {
         return new Todo(description);
     }
 
+    /**
+     * Parses a deadline task description into a Deadline object.
+     *
+     * @param description the full deadline description including "/by" delimiter and timing
+     * @return new Deadline task instance
+     * @throws IOException if the description does not contain "/by"
+     * @throws NeruneruneException if date-time parsing fails
+     */
     public static Task parseDeadline(String description) throws IOException, NeruneruneException {
         int findIndex = description.indexOf("/by");
         if (findIndex == -1) {
@@ -40,6 +71,14 @@ public class Parser {
         return new Deadline(deadlineDescription, byTiming);
     }
 
+    /**
+     * Parses an event task description into an Event object.
+     *
+     * @param description the full event description including "/from" and "/to" delimiters with timings
+     * @return new Event task instance
+     * @throws IOException if delimiters are missing or in wrong order
+     * @throws NeruneruneException if date-time parsing fails
+     */
     public static Task parseEvent(String description) throws IOException, NeruneruneException {
         int findIndexFrom = description.indexOf("/from");
         int findIndexTo = description.indexOf("/to");
@@ -56,9 +95,18 @@ public class Parser {
         return new Event(eventDescription, fromTiming, toTiming);
     }
 
+    /**
+     * Parses a stored task line string into a corresponding Task object.
+     * Split stored task line string using '|'
+     *
+     * @param line the stored task line string, formatted with delimiters
+     * @return Task object corresponding to the stored line
+     * @throws IOException if the line is corrupted or task type unknown
+     * @throws NeruneruneException if stored date-time parsing fails
+     */
     public static Task parseTaskLine(String line) throws IOException, NeruneruneException {
-        String[] parts = line.split(" \\| "); // split by '|'
-        if (parts.length < 3) { // check
+        String[] parts = line.split(" \\| ");
+        if (parts.length < 3) {
             throw new IOException("Corrupted line: " + line);
         }
         String taskType = parts[0];
@@ -86,6 +134,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses the user input into a Command object, validating input and arguments.
+     *
+     * @param userInput the full input string from the user
+     * @param ui the user interface instance for interaction or validation context
+     * @return the Command object representing the user's requested action
+     * @throws Exception for unknown commands or invalid input formats
+     */
     public static Command parseCommand(String userInput, Ui ui) throws Exception {
         CommandValidator.validateUserInputNotEmpty(userInput);
 
@@ -118,8 +174,7 @@ public class Parser {
                 CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
                 return new DeleteCommand(taskString);
             default:
-                String unknownCommandMsg = String.format(
-                        "Sorry, I do not quite get that.\nType \"command\" to see all availble command");
+                String unknownCommandMsg = "Sorry, I do not quite get that.\nType \"command\" to see all available command";
                 throw new NeruneruneException(unknownCommandMsg);
         }
     }

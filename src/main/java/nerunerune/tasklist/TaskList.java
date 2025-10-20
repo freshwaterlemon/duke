@@ -9,37 +9,68 @@ import storage.Storage;
 import task.Task;
 import ui.Ui;
 
+/**
+ * Manages a list of tasks and coordinates between UI and storage.
+ * Supports loading, saving, adding, deleting, marking, and listing tasks.
+ */
 public class TaskList {
     private final ArrayList<Task> taskList;
     private final Storage storage;
     private final Ui ui;
 
+    /**
+     * Constructs a TaskList with given Storage and UI components.
+     *
+     * @param storage the storage handler for persistence storage
+     * @param ui the user interface for displaying messages
+     */
     public TaskList(Storage storage, Ui ui) {
         this.storage = storage;
         this.ui = ui;
         this.taskList = new ArrayList<>();
     }
 
-    // load tasks from storage
+    /**
+     * Loads tasks from storage into the task list.
+     *
+     * @throws NeruneruneException if storage loading fails
+     * @throws IOException if an IO error occurs during reading
+     */
     public void loadTasks() throws NeruneruneException, IOException {
         storage.handleStorage(taskList);
     }
 
-    // save the current task list
+    /**
+     * Saves the current tasks to storage.
+     *
+     * @throws NeruneruneException if saving fails
+     * @throws IOException if an IO error occurs during writing
+     */
     public void saveTasks() throws NeruneruneException, IOException {
         storage.saveTasksToStorage(getTaskList());
     }
 
-    // print tasklist
+    /**
+     * Prints the current list of tasks using the UI component.
+     */
     public void listTasks() {
         ui.printTaskList(taskList);
     }
 
+    /**
+     * Returns the list of tasks.
+     *
+     * @return the ArrayList of Task objects
+     */
     public ArrayList<Task> getTaskList() {
         return this.taskList;
     }
 
-    // add task object to arraylist of task and display confirmation message
+    /**
+     * Adds a task to the list and displays a confirmation message.
+     *
+     * @param task the task to add
+     */
     public void addTask(Task task) {
         taskList.add(task);
         ui.printMessage(("Got it, task added to your task list.").indent(4));
@@ -47,7 +78,11 @@ public class TaskList {
         ui.printMessage(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
     }
 
-    // handle marking of task as done
+    /**
+     * Marks a task as done, found by description or index.
+     *
+     * @param taskString the task description or index
+     */
     public void markTask(String taskString) {
         try {
             Task task = findTaskByDescription(taskString, false, false);
@@ -59,7 +94,11 @@ public class TaskList {
         }
     }
 
-    // handle unmarking of task as undone
+    /**
+     * Unmarks a task as undone, found by description or index.
+     *
+     * @param taskString the task description or index
+     */
     public void unmarkTask(String taskString) {
         try {
             Task task = findTaskByDescription(taskString, true, true);
@@ -71,7 +110,11 @@ public class TaskList {
         }
     }
 
-    // delete task object from arraylist of task and display confirmation message
+    /**
+     * Deletes a task found by description or index and displays confirmation.
+     *
+     * @param description the task description or index
+     */
     public void deleteTask(String description) {
         try {
             Task task = findTaskByDescription(description);
@@ -85,33 +128,42 @@ public class TaskList {
         }
     }
 
-    // find if task is inside the tasklist arraylist
+    /**
+     * Finds a task by description and done status, optionally searching from the end.
+     * Finds from end if findFromEnd is true
+     * Supports finding tasks with duplicate descriptions by searching from the
+     * start of the list when marking done, and from the end of the list when unmarking.
+     *
+     * @param description the task description (case-insensitive)
+     * @param doneStatus the done status the task must have
+     * @param findFromEnd true to search from the end of the list, false from beginning
+     * @return the Task found with matching criteria
+     * @throws NeruneruneException if no matching task is found
+     */
     private Task findTaskByDescription(String description, boolean doneStatus, boolean findFromEnd)
             throws NeruneruneException {
-        // unmark from the end of list as newer task should be unmark first
 
-        // find from end if true
         int startFrom = findFromEnd ? taskList.size() - 1 : 0;
         int endAt = findFromEnd ? -1 : taskList.size();
         int step = findFromEnd ? -1 : 1;
 
         for (int i = startFrom; i != endAt; i += step) {
             Task task = taskList.get(i);
-            // user decide to do the same task again after it is done
-            // check isDone in task obj, continue if task is found but already mark as done
             if (task.getDescription().equalsIgnoreCase(description) && task.getIsDone() == doneStatus) {
                 return task;
             }
         }
-        // return null;
         throw new NeruneruneException(
                 "Task with description \"" + description + "\" not found.");
 
     }
 
-    /*
-     * find if task is inside the tasklist arraylist using
-     * description or by using index
+    /**
+     * Finds a task by description or numeric index.
+     *
+     * @param description the task description or index string
+     * @return the Task found
+     * @throws NeruneruneException if no matching task is found or index is out of range
      */
     private Task findTaskByDescription(String description) throws NeruneruneException {
         try {
@@ -133,7 +185,11 @@ public class TaskList {
         throw new NeruneruneException("Task with description \"" + description + "\" not found.");
     }
 
-    // handle to do
+    /**
+     * Adds a Todo task parsed from the description.
+     *
+     * @param description the todo description string
+     */
     public void addTodo(String description) {
         try {
             Task todoTask = Parser.parseTodo(description);
@@ -143,7 +199,11 @@ public class TaskList {
         }
     }
 
-    // handle deadline
+    /**
+     * Adds a Deadline task parsed from the description.
+     *
+     * @param description the deadline description string
+     */
     public void addDeadline(String description) {
         try {
             Task deadlineTask = Parser.parseDeadline(description);
@@ -154,7 +214,11 @@ public class TaskList {
         }
     }
 
-    // handle event
+    /**
+     * Adds an Event task parsed from the description.
+     *
+     * @param description the event description string
+     */
     public void addEvent(String description) {
         try {
             Task eventTask = Parser.parseEvent(description);
