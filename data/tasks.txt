@@ -1,4 +1,4 @@
 T | 1 | borrow book
-D | 0 | return book | Jun 01 2025 1500
+D | 0 | return book | Aug 02 2025 1845
 E | 0 | meeting | Aug 03 2025 1400 | Aug 03 2025 1530
 T | 1 | buy lunch
