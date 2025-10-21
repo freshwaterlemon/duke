@@ -1,8 +1,8 @@
-package command;
+package nerunerune.command;
 
-import tasklist.TaskList;
-import ui.Ui;
-import storage.Storage;
+import nerunerune.tasklist.TaskList;
+import nerunerune.ui.Ui;
+import nerunerune.storage.Storage;
 
 /**
  * Represents a command to exit the application.

@@ -1,4 +1,4 @@
-package task;
+package nerunerune.task;
 
 /**
  * Abstract base class representing a task.

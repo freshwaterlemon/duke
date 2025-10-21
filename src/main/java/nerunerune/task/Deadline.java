@@ -1,8 +1,8 @@
-package task;
+package nerunerune.task;
 
 import java.time.LocalDateTime;
 
-import parser.DateTimeParser;
+import nerunerune.parser.DateTimeParser;
 
 /**
  * Represents a deadline task with a specific date and time by which it must be completed.

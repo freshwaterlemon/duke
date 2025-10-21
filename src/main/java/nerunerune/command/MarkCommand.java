@@ -1,9 +1,9 @@
-package command;
+package nerunerune.command;
 
-import exception.NeruneruneException;
-import storage.Storage;
-import tasklist.TaskList;
-import ui.Ui;
+import nerunerune.exception.NeruneruneException;
+import nerunerune.storage.Storage;
+import nerunerune.tasklist.TaskList;
+import nerunerune.ui.Ui;
 
 /**
  * Represents a command to mark a task as completed in the task list.

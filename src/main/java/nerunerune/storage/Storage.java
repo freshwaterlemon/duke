@@ -1,14 +1,14 @@
-package storage;
+package nerunerune.storage;
 
-import parser.Parser;
+import nerunerune.parser.Parser;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import exception.NeruneruneException;
-import task.Task;
+import nerunerune.exception.NeruneruneException;
+import nerunerune.task.Task;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;

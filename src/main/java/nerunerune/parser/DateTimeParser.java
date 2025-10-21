@@ -1,11 +1,11 @@
-package parser;
+package nerunerune.parser;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import exception.NeruneruneException;
+import nerunerune.exception.NeruneruneException;
 
 /**
  * Provides utility methods to parse and format date-time strings

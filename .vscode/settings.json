@@ -1,0 +1,9 @@
+{
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "master"
+    ],
+    "java.project.sourcePaths": [
+        "src/main/java/nerunerune"
+    ],
+    "java.project.outputPath": "bin"
+}

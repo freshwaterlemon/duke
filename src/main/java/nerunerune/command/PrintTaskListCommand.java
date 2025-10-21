@@ -1,8 +1,8 @@
-package command;
+package nerunerune.command;
 
-import storage.Storage;
-import tasklist.TaskList;
-import ui.Ui;
+import nerunerune.storage.Storage;
+import nerunerune.tasklist.TaskList;
+import nerunerune.ui.Ui;
 
 /**
  * Represents a command to print the entire task list.

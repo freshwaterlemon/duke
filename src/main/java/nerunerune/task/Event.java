@@ -1,9 +1,8 @@
-package task;
+package nerunerune.task;
 
 import java.time.LocalDateTime;
 
-import parser.DateTimeParser;
-import parser.DateTimeParser;
+import nerunerune.parser.DateTimeParser;
 
 /**
  * Represents an event task with a start and an end time.

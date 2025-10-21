@@ -1,6 +1,6 @@
-package validation;
+package nerunerune.validation;
 
-import exception.NeruneruneException;
+import nerunerune.exception.NeruneruneException;
 
 /**
  * Provides validation methods for user commands and input in the Nerunerune application.

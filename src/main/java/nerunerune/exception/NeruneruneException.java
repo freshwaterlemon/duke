@@ -1,4 +1,4 @@
-package exception;
+package nerunerune.exception;
 
 /**
  * Simple custom exception class for errors specific to Nerunerune application.

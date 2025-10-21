@@ -1,13 +1,13 @@
-package tasklist;
+package nerunerune.tasklist;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import exception.NeruneruneException;
-import parser.Parser;
-import storage.Storage;
-import task.Task;
-import ui.Ui;
+import nerunerune.exception.NeruneruneException;
+import nerunerune.parser.Parser;
+import nerunerune.storage.Storage;
+import nerunerune.task.Task;
+import nerunerune.ui.Ui;
 
 /**
  * Manages a list of tasks and coordinates between UI and storage.

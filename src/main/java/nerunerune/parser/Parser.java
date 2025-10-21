@@ -1,16 +1,16 @@
-package parser;
+package nerunerune.parser;
 
-import ui.Ui;
-import validation.CommandValidator;
-import task.Task;
-import task.Todo;
-import task.Deadline;
-import task.Event;
+import nerunerune.ui.Ui;
+import nerunerune.validation.CommandValidator;
+import nerunerune.task.Task;
+import nerunerune.task.Todo;
+import nerunerune.task.Deadline;
+import nerunerune.task.Event;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import command.*;
-import exception.NeruneruneException;
+import nerunerune.command.*;
+import nerunerune.exception.NeruneruneException;
 
 /**
  * Provides methods to parse user input into commands or tasks.

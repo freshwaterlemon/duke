@@ -1,11 +1,13 @@
+package nerunerune;
+
 import java.io.IOException;
 import java.util.Scanner;
-import command.Command;
-import exception.NeruneruneException;
-import parser.Parser;
-import ui.Ui;
-import storage.Storage;
-import tasklist.TaskList;
+import nerunerune.command.Command;
+import nerunerune.exception.NeruneruneException;
+import nerunerune.parser.Parser;
+import nerunerune.ui.Ui;
+import nerunerune.storage.Storage;
+import nerunerune.tasklist.TaskList;
 
 /**
  * Main class for the Nerunerune application.

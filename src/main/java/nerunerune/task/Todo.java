@@ -1,4 +1,4 @@
-package task;
+package nerunerune.task;
 
 /**
  * Represents a Todo task without any specific timing.

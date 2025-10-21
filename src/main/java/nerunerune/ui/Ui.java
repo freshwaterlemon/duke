@@ -1,7 +1,7 @@
-package ui;
+package nerunerune.ui;
 
 import java.util.ArrayList;
-import task.Task;
+import nerunerune.task.Task;
 
 /**
  * Handles user interface display functions such as printing messages,
