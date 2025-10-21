@@ -1,67 +1,161 @@
 ____________________________________________________________
-Hello I am PakiPaki, your little assistant, here to help with your tasks
-
-Let's get things snapping:
-
-1. Type your task and I'll snap it onto your list.
-2. Type 'list' to see all your tasks lined up.
-3. Type 'bye' to exit when you're done.
-4. Type 'mark ...' followed by the task you want to mark to mark it as done.
-5. Type 'unmark ...' followed by the task you want to unmark to unmark it as done.
-
+Hello! I'm Nerunerune, here to help you manage your tasks.
+Type "command" to see all availble command
 ____________________________________________________________
+Created new storage file: tasks.txt
 
-Snap! "buy book" added to your task list.
-
-
-Here's what's on your task list so far:
-    1. [ ] buy book
+    Your task list is empty!
 
 
-Snap! "return book" added to your task list.
+    Got it, task added to your task list.
+
+        [T][ ] borrow book
+
+    Now you have 1 tasks in the list.
 
 
-Wokay! "buy book" mark as done!
+    Got it, task added to your task list.
 
- [X] buy book
+        [T][ ] buy food
 
-
-Here's what's on your task list so far:
-    1. [X] buy book
-    2. [ ] return book
+    Now you have 2 tasks in the list.
 
 
-Snap! "buy book" added to your task list.
+    Got it, task added to your task list.
+
+        [T][ ] run
+
+    Now you have 3 tasks in the list.
 
 
-Wokay! "buy book" mark as done!
+    Here's what's on your task list so far: (3 in total)
 
- [X] buy book
+        1. [T][ ] borrow book
 
+        2. [T][ ] buy food
 
-Here's what's on your task list so far:
-    1. [X] buy book
-    2. [ ] return book
-    3. [X] buy book
+        3. [T][ ] run
 
 
-buy book not found or all matching tasks are already marked as done.
+    Got it, task removed from your task list.
+
+        [T][ ] run
+
+    Now you have 2 tasks in the list.
 
 
-Alright "buy book" unmark.
+    Here's what's on your task list so far: (2 in total)
 
- [ ] buy book
+        1. [T][ ] borrow book
 
-
-Here's what's on your task list so far:
-    1. [X] buy book
-    2. [ ] return book
-    3. [ ] buy book
+        2. [T][ ] buy food
 
 
-(Oops! You didn't type anything. Go ahead, give me a task!)
+    Got it, task added to your task list.
+
+        [T][ ] run
+
+    Now you have 3 tasks in the list.
 
 
-____________________________________________________________
-Thank you for chatting with me! Until next time, keep cracking and stay sharp!
+    Got it, task removed from your task list.
+
+        [T][ ] run
+
+    Now you have 2 tasks in the list.
+
+
+    Here's what's on your task list so far: (2 in total)
+
+        1. [T][ ] borrow book
+
+        2. [T][ ] buy food
+
+
+    Task with description "borrow bok" not found.
+
+
+    Task with description "borrow bok" not found.
+
+
+    Alright! "borrow book" mark as done!
+
+        [T][X] borrow book
+
+
+    Alright! "borrow book" unmark.
+
+        [T][ ] borrow book
+
+
+    Task with description "nonexistent task" not found.
+
+
+    Got it, task added to your task list.
+
+        [D][ ] return book (by: Feb 01 2025 7:00 pm)
+
+    Now you have 3 tasks in the list.
+
+
+    Got it, task added to your task list.
+
+        [E][ ] project meeting (from: Feb 02 2025 4:00 pm to: Feb 02 2025 5:45 pm)
+
+    Now you have 4 tasks in the list.
+
+
+    Here's what's on your task list so far: (4 in total)
+
+        1. [T][ ] borrow book
+
+        2. [T][ ] buy food
+
+        3. [D][ ] return book (by: Feb 01 2025 7:00 pm)
+
+        4. [E][ ] project meeting (from: Feb 02 2025 4:00 pm to: Feb 02 2025 5:45 pm)
+
+
+    Something went wrong!: Details after 'todo' cannot be empty.
+
+
+    Error parsing deadline: Deadline must contain '/by'
+
+    Please use the format: deadline <task> /by <date/time>
+
+
+    Error parsing deadline: Deadline must contain '/by'
+
+    Please use the format: deadline <task> /by <date/time>
+
+
+    Error parsing deadline: Deadline must contain '/by'
+
+    Please use the format: deadline <task> /by <date/time>
+
+
+    Error parsing event: Event must contain '/from' and '/to' in correct order
+
+    Please use the format: event <task> /from <date/time> /to <date/time>
+
+
+    Error parsing event: Event must contain '/from' and '/to' in correct order
+
+    Please use the format: event <task> /from <date/time> /to <date/time>
+
+
+    Error parsing event: Event must contain '/from' and '/to' in correct order
+
+    Please use the format: event <task> /from <date/time> /to <date/time>
+
+
+    Sorry, I do not quite get that.
+    Type "command" to see all available command
+
+
+        Oops! You didn't type anything. Go ahead, give me a task!
+
+
+    Until next time!
+
 ____________________________________________________________
