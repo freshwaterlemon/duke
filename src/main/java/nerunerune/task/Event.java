@@ -103,4 +103,15 @@ public class Event extends Task {
     public LocalDateTime getEventToDateTime() {
         return toTiming;
     }
+
+    /**
+     * Checks if this event has ended.
+     * Compares the event's end time with the current date and time.
+     *
+     * @return true if the event's end time is before the current date and time, false otherwise
+     */
+    @Override
+    public boolean isBackdated() {
+        return this.toTiming.isBefore(LocalDateTime.now());
+    }
 }

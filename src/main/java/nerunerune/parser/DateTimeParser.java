@@ -79,26 +79,4 @@ public class DateTimeParser {
     public static String formatForStorage(LocalDateTime dateTime) {
         return dateTime.format(STORAGE_FORMATTER);
     }
-
-    /**
-     * Checks if a task is backdated (has a date/time that has already passed).
-     * For Deadline tasks: checks if the deadline has passed.
-     * For Event tasks: checks if the event end time has passed.
-     * Todo tasks are never backdated as they have no associated dates.
-     *
-     * @param task the task to check
-     * @return true if the task is backdated (date/time has passed), false otherwise
-     */
-    public static boolean isBackdated(Task task) {
-        LocalDateTime now = LocalDateTime.now();
-
-        if (task instanceof Deadline) {
-            LocalDateTime dueDate = ((Deadline) task).getDeadlineByDateTime();
-            return dueDate.isBefore(now);
-        } else if (task instanceof Event) {
-            LocalDateTime endDate = ((Event) task).getEventToDateTime();
-            return endDate.isBefore(now);
-        }
-        return false;
-    }
 }

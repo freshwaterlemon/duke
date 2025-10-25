@@ -92,4 +92,13 @@ public abstract class Task {
      */
     public abstract String toStorageString();
 
+    /**
+     * Checks if this task is backdated (date/time has passed).
+     * Default implementation returns false for tasks without dates.
+     *
+     * @return true if the task is backdated, false otherwise
+     */
+    public boolean isBackdated() {
+        return false;
+    }
 }

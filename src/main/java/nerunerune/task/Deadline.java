@@ -87,4 +87,15 @@ public class Deadline extends Task {
     public LocalDateTime getDeadlineByDateTime() {
         return byTiming;
     }
+
+    /**
+     * Checks if this deadline has passed.
+     * Compares the deadline's due date with the current date and time.
+     *
+     * @return true if the deadline is before the current date and time, false otherwise
+     */
+    @Override
+    public boolean isBackdated() {
+        return this.byTiming.isBefore(LocalDateTime.now());
+    }
 }

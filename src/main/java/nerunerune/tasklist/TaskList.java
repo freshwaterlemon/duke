@@ -94,7 +94,7 @@ public class TaskList {
                 int taskCount = 0;
 
                 for (Task task : taskList) {
-                    if (!task.getIsDone() && DateTimeParser.isBackdated(task)) {
+                    if (!task.getIsDone() && task.isBackdated()) {
                         task.markAsDone();
                         taskCount++;
                     }
