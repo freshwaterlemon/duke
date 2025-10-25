@@ -85,4 +85,22 @@ public class Event extends Task {
                 DateTimeParser.formatForStorage(fromTiming),
                 DateTimeParser.formatForStorage(toTiming));
     }
+
+    /**
+     * Returns the start date and time for this Event task.
+     *
+     * @return the start LocalDateTime indicating when the event begins
+     */
+    public LocalDateTime getEventFromDateTime() {
+        return fromTiming;
+    }
+
+    /**
+     * Returns the end date and time for this Event task.
+     *
+     * @return the end LocalDateTime indicating when the event concludes
+     */
+    public LocalDateTime getEventToDateTime() {
+        return toTiming;
+    }
 }

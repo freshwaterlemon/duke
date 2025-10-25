@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import nerunerune.exception.NeruneruneException;
+import nerunerune.parser.DateTimeParser;
 import nerunerune.parser.Parser;
 import nerunerune.storage.Storage;
 import nerunerune.task.Task;
@@ -79,16 +80,33 @@ public class TaskList {
     }
 
     /**
-     * Marks a task as done, found by description or index.
+     * Marks a task or multiple tasks as done based on the task string provided.
+     * If the task string is "backdated", marks all tasks with deadlines/events that have passed.
+     * Otherwise, finds and marks a single task by description or numeric index.
+     * Displays confirmation message after marking.
      *
-     * @param taskString the task description or index
+     * @param taskString the task description, index, or "backdated" to mark all backdated tasks
      */
     public void markTask(String taskString) {
         try {
-            Task task = findTaskByDescription(taskString, false, false);
-            task.markAsDone();
-            ui.printMessage(("Alright! \"" + taskString + "\" mark as done!").indent(4));
-            ui.printMessage((task + "\n").indent(8));
+            // mark all backdated tasks
+            if(taskString.equalsIgnoreCase("backdated")) {
+                int taskCount = 0;
+
+                for (Task task : taskList) {
+                    if (!task.getIsDone() && DateTimeParser.isBackdated(task)) {
+                        task.markAsDone();
+                        taskCount++;
+                    }
+                }
+
+                ui.printMessage(("Marked " + taskCount + " backdated task(s) as done.\n").indent(4));
+            } else {
+                Task task = findTaskByDescription(taskString, false, false);
+                task.markAsDone();
+                ui.printMessage(("Alright! \"" + taskString + "\" mark as done!").indent(4));
+                ui.printMessage((task + "\n").indent(8));
+            }
         } catch (NeruneruneException e) {
             ui.printMessage((e.getMessage() + "\n").indent(4));
         }
@@ -111,17 +129,30 @@ public class TaskList {
     }
 
     /**
-     * Deletes a task found by description or index and displays confirmation.
+     * Deletes a task or multiple tasks based on the description provided.
+     * If the description is "all done", removes all completed tasks from the list.
+     * Otherwise, finds and removes a single task by description or numeric index.
+     * Displays confirmation message after deletion.
      *
-     * @param description the task description or index
+     * @param description the task description, index, or "all done" to delete all completed tasks
      */
     public void deleteTask(String description) {
         try {
-            Task task = findTaskByDescription(description);
-            taskList.remove(task);
-            ui.printMessage(("Got it, task removed from your task list.").indent(4));
-            ui.printMessage((task.toString() + "\n").indent(8));
-            ui.printMessage(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
+            // delete all completed tasks
+            if (description.equalsIgnoreCase("all done")) {
+                int initialSize = taskList.size();
+                taskList.removeIf(Task::getIsDone);
+                int deletedCount = initialSize - taskList.size();
+                ui.printMessage(("Got it, " + deletedCount + " completed task(s) removed.").indent(4));
+                ui.printMessage(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
+            // delete task based on description
+            } else {
+                Task task = findTaskByDescription(description);
+                taskList.remove(task);
+                ui.printMessage(("Got it, task removed from your task list.").indent(4));
+                ui.printMessage((task.toString() + "\n").indent(8));
+                ui.printMessage(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
+            }
 
         } catch (NeruneruneException e) {
             ui.printMessage(e.getMessage());

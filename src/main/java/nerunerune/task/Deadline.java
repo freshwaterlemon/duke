@@ -80,11 +80,11 @@ public class Deadline extends Task {
     }
 
     /**
-     * Returns the deadline date and time associated with this task.
+     * Returns the deadline date and time for this Deadline task.
      *
-     * @return the deadline LocalDateTime
+     * @return the deadline LocalDateTime indicating when the task is due
      */
-    public LocalDateTime getDateTime() {
+    public LocalDateTime getDeadlineByDateTime() {
         return byTiming;
     }
 }

@@ -21,8 +21,10 @@ public class Ui {
                 5. Use 'event <task> /from <start date/time> /to <end date/time>' to add an event.
                     - Date/time format: DD-MM-YYYY HHMM (e.g. 01-01-2025 1800)
                 6. Use 'mark <task>' or 'mark' <task number> to mark a task as done.
+                    - Use 'mark backdated' to mark all tasks with passed deadlines/events as done.
                 7. Use 'unmark <task>' or 'unmark' <task number> to unmark a task as not done.
                 8. Use 'delete' <task> or <task number> to delete a task from list and storage.
+                    - Use 'delete all done' to delete all completed tasks at once.
                 9. Type 'bye' to exit the chat.
             """;
 
