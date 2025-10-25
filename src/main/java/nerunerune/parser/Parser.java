@@ -46,7 +46,7 @@ public class Parser {
      * @param description the description of the todo task
      * @return new Todo task instance
      */
-    public static Task parseTodo(String description) {
+    public static Todo parseTodo(String description) {
         return new Todo(description);
     }
 
@@ -58,7 +58,7 @@ public class Parser {
      * @throws IOException if the description does not contain "/by"
      * @throws NeruneruneException if date-time parsing fails
      */
-    public static Task parseDeadline(String description) throws IOException, NeruneruneException {
+    public static Deadline parseDeadline(String description) throws IOException, NeruneruneException {
         int findIndex = description.indexOf("/by");
         if (findIndex == -1) {
             throw new IOException("Deadline must contain '/by'");
@@ -79,7 +79,7 @@ public class Parser {
      * @throws IOException if delimiters are missing or in wrong order
      * @throws NeruneruneException if date-time parsing fails
      */
-    public static Task parseEvent(String description) throws IOException, NeruneruneException {
+    public static Event parseEvent(String description) throws IOException, NeruneruneException {
         int findIndexFrom = description.indexOf("/from");
         int findIndexTo = description.indexOf("/to");
         if (findIndexFrom == -1 || findIndexTo == -1 || findIndexFrom > findIndexTo) {
