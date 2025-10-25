@@ -1,13 +1,13 @@
 package nerunerune.tasklist;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import nerunerune.exception.NeruneruneException;
-import nerunerune.parser.DateTimeParser;
 import nerunerune.parser.Parser;
 import nerunerune.storage.Storage;
-import nerunerune.task.Task;
+import nerunerune.task.*;
 import nerunerune.ui.Ui;
 
 /**
@@ -223,7 +223,7 @@ public class TaskList {
      */
     public void addTodo(String description) {
         try {
-            Task todoTask = Parser.parseTodo(description);
+            Todo todoTask = Parser.parseTodo(description);
             addTask(todoTask);
         } catch (Exception e) {
             ui.printMessage(("Error parsing todo: " + e.getMessage()).indent(4));
@@ -237,7 +237,7 @@ public class TaskList {
      */
     public void addDeadline(String description) {
         try {
-            Task deadlineTask = Parser.parseDeadline(description);
+            Deadline deadlineTask = Parser.parseDeadline(description);
             addTask(deadlineTask);
         } catch (Exception e) {
             ui.printMessage(("Error parsing deadline: " + e.getMessage()).indent(4));
@@ -247,17 +247,48 @@ public class TaskList {
 
     /**
      * Adds an Event task parsed from the description.
+     * Checks for overlapping events before adding. If the new event overlaps
+     * with an existing event in the task list, it will not be added and a
+     * warning message will be displayed.
      *
      * @param description the event description string
      */
     public void addEvent(String description) {
         try {
-            Task eventTask = Parser.parseEvent(description);
+            Event eventTask = Parser.parseEvent(description);
+            if (hasOverlappingEvent(eventTask.getEventFromDateTime(), eventTask.getEventToDateTime())) {
+                ui.printMessage("Cannot add event: It overlaps with an existing event.".indent(4));
+                return; // don't add the task
+            }
             addTask(eventTask);
+
         } catch (Exception e) {
             ui.printMessage(("Error parsing event: " + e.getMessage()).indent(4));
             ui.printMessage(("Please use the format: event <task> /from <date/time> /to <date/time>").indent(4));
         }
     }
+
+    /**
+     * Checks if a new event overlaps with existing events.
+     *
+     * @param newFrom the start time of the new event
+     * @param newTo the end time of the new event
+     * @return true if there's an overlapping event, false otherwise
+     */
+    public boolean hasOverlappingEvent(LocalDateTime newFrom, LocalDateTime newTo) {
+        for (Task task : taskList) {
+            if (task instanceof Event event) {
+                LocalDateTime existingFrom = event.getEventFromDateTime();
+                LocalDateTime existingTo = event.getEventToDateTime();
+
+                // check new event starts before existing ends && new event ends after existing starts
+                if (newFrom.isBefore(existingTo) && newTo.isAfter(existingFrom)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
 }
