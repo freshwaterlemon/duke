@@ -7,6 +7,7 @@ import nerunerune.task.Todo;
 import nerunerune.task.Deadline;
 import nerunerune.task.Event;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import nerunerune.command.*;
@@ -136,11 +137,12 @@ public class Parser {
 
     /**
      * Parses the user input into a Command object, validating input and arguments.
+     * Supports commands: list, bye, command, schedule, mark, unmark, todo, deadline, event, and delete.
      *
      * @param userInput the full input string from the user
      * @param ui the user interface instance for interaction or validation context
      * @return the Command object representing the user's requested action
-     * @throws Exception for unknown commands or invalid input formats
+     * @throws NeruneruneException for unknown commands or invalid input formats
      */
     public static Command parseCommand(String userInput, Ui ui) throws Exception {
         CommandValidator.validateUserInputNotEmpty(userInput);
@@ -155,6 +157,10 @@ public class Parser {
                 return new ExitCommand();
             case "command":
                 return new ViewAllCommand();
+            case "schedule":
+                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
+                LocalDate scheduleDate = DateTimeParser.parseScheduleDate(taskString);
+                return new ScheduleCommand(scheduleDate);
             case "mark":
                 CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
                 return new MarkCommand(taskString);

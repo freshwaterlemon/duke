@@ -1,4 +1,6 @@
 T | 1 | borrow book
 D | 0 | return book | Aug 02 2025 1845
+D | 0 | project submission | Aug 02 2025 0000
 E | 0 | meeting | Aug 03 2025 1400 | Aug 03 2025 1530
+E | 0 | team meeting | Aug 02 2025 1530 | Aug 02 2025 1700
 T | 1 | buy lunch

@@ -20,6 +20,7 @@ public class DateTimeParser {
     private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy h:mm a");
     private static final DateTimeFormatter STORAGE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy HHmm");
     private static final DateTimeFormatter DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter LONG_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEEE, dd MMM yyyy");
 
     /**
      * Parses a date-time string from user input.
@@ -78,5 +79,42 @@ public class DateTimeParser {
      */
     public static String formatForStorage(LocalDateTime dateTime) {
         return dateTime.format(STORAGE_FORMATTER);
+    }
+
+    /**
+     * Formats a LocalDate for display in schedule views.
+     * Converts the date to a long, readable format (e.g., "Sunday, 26 Oct 2025").
+     *
+     * @param date the date to format
+     * @return the formatted date string in long format (EEEE, dd MMM yyyy)
+     */
+    public static String formatForSchedule(LocalDate date) {
+        return date.format(LONG_DATE_FORMATTER);
+    }
+
+    /**
+     * Parses a date string from user input for schedule commands.
+     * Supports shortcuts "today", "tomorrow", and "yesterday", as well as
+     * dates in DD-MM-YYYY format.
+     *
+     * @param dateString the date string to parse (e.g., "today", "25-10-2025")
+     * @return the parsed LocalDate
+     * @throws NeruneruneException if the date format is invalid or cannot be parsed
+     */
+    public static LocalDate parseScheduleDate(String dateString) throws NeruneruneException {
+        try {
+            switch (dateString.toLowerCase()) {
+                case "today":
+                    return LocalDate.now();
+                case "tomorrow":
+                    return LocalDate.now().plusDays(1);
+                case "yesterday":
+                    return LocalDate.now().minusDays(1);
+                default:
+                    return LocalDate.parse(dateString, DATE_ONLY_FORMATTER);
+            }
+        } catch (DateTimeParseException e) {
+            throw new NeruneruneException("Invalid date format! Use DD-MM-YYYY or today/tomorrow/yesterday");
+        }
     }
 }

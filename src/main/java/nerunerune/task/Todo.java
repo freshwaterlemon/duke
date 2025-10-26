@@ -1,5 +1,7 @@
 package nerunerune.task;
 
+import java.time.LocalDate;
+
 /**
  * Represents a Todo task without any specific timing.
  * Extends the Task class to provide Todo-specific behavior.
@@ -57,4 +59,15 @@ public class Todo extends Task {
         return String.format("T | %d | %s", getIsDone() ? 1 : 0, getDescription());
     }
 
+    /**
+     * Checks whether this todo task occurs on the specified date.
+     * Todo tasks have no specific date or time, so this always returns false.
+     *
+     * @param date the date to check
+     * @return false, as todos are not associated with any specific date
+     */
+    @Override
+    public boolean occursOn(LocalDate date) {
+        return false; // todos don't have a specific date
+    }
 }

@@ -1,5 +1,7 @@
 package nerunerune.task;
 
+import java.time.LocalDate;
+
 /**
  * Abstract base class representing a task.
  * Contains common properties and methods for all task types,
@@ -101,4 +103,11 @@ public abstract class Task {
     public boolean isBackdated() {
         return false;
     }
+
+    /**
+     * Checks if this task occurs on the specified date.
+     * @param date The date to check
+     * @return true if the task occurs on this date, false otherwise
+     */
+    public abstract boolean occursOn(LocalDate date);
 }

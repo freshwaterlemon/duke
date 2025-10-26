@@ -23,7 +23,7 @@ public class TaskList {
      * Constructs a TaskList with given Storage and UI components.
      *
      * @param storage the storage handler for persistence storage
-     * @param ui the user interface for displaying messages
+     * @param ui      the user interface for displaying messages
      */
     public TaskList(Storage storage, Ui ui) {
         this.storage = storage;
@@ -35,7 +35,7 @@ public class TaskList {
      * Loads tasks from storage into the task list.
      *
      * @throws NeruneruneException if storage loading fails
-     * @throws IOException if an IO error occurs during reading
+     * @throws IOException         if an IO error occurs during reading
      */
     public void loadTasks() throws NeruneruneException, IOException {
         storage.handleStorage(taskList);
@@ -45,7 +45,7 @@ public class TaskList {
      * Saves the current tasks to storage.
      *
      * @throws NeruneruneException if saving fails
-     * @throws IOException if an IO error occurs during writing
+     * @throws IOException         if an IO error occurs during writing
      */
     public void saveTasks() throws NeruneruneException, IOException {
         storage.saveTasksToStorage(getTaskList());
@@ -90,7 +90,7 @@ public class TaskList {
     public void markTask(String taskString) {
         try {
             // mark all backdated tasks
-            if(taskString.equalsIgnoreCase("backdated")) {
+            if (taskString.equalsIgnoreCase("backdated")) {
                 int taskCount = 0;
 
                 for (Task task : taskList) {
@@ -145,7 +145,7 @@ public class TaskList {
                 int deletedCount = initialSize - taskList.size();
                 ui.printMessage(("Got it, " + deletedCount + " completed task(s) removed.").indent(4));
                 ui.printMessage(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
-            // delete task based on description
+                // delete task based on description
             } else {
                 Task task = findTaskByDescription(description);
                 taskList.remove(task);
@@ -166,7 +166,7 @@ public class TaskList {
      * start of the list when marking done, and from the end of the list when unmarking.
      *
      * @param description the task description (case-insensitive)
-     * @param doneStatus the done status the task must have
+     * @param doneStatus  the done status the task must have
      * @param findFromEnd true to search from the end of the list, false from beginning
      * @return the Task found with matching criteria
      * @throws NeruneruneException if no matching task is found
@@ -272,7 +272,7 @@ public class TaskList {
      * Checks if a new event overlaps with existing events.
      *
      * @param newFrom the start time of the new event
-     * @param newTo the end time of the new event
+     * @param newTo   the end time of the new event
      * @return true if there's an overlapping event, false otherwise
      */
     public boolean hasOverlappingEvent(LocalDateTime newFrom, LocalDateTime newTo) {
@@ -289,6 +289,4 @@ public class TaskList {
         }
         return false;
     }
-
-
 }

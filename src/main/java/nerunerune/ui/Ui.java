@@ -1,31 +1,38 @@
 package nerunerune.ui;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import nerunerune.task.Task;
+
+import nerunerune.parser.DateTimeParser;
+import nerunerune.task.*;
+import nerunerune.tasklist.TaskList;
 
 /**
  * Handles user interface display functions such as printing messages,
  * task lists, start/end greetings, and user commands guide.
  */
 public class Ui {
-    private static final String BOTNAME = "Nerunerune";
+    private static final String BOT_NAME = "Nerunerune";
     private static final String HORIZONTAL_LINE = "____________________________________________________________";
-    private static final String USERGUIDEMSG = """
+    private static final String USER_GUIDE_MSG = """
             List of Task Commands Available:
 
-                1. Type 'command' to see all command available. 
-                2. Type 'list' to see all your tasks.
-                3. Use 'todo <task>' to add a simple task.
-                4. Use 'deadline <task> /by <date/time>' to add a task with a deadline.
-                    - Date/time format: DD-MM-YYYY HHMM (e.g. 01-01-2025 1800)
-                5. Use 'event <task> /from <start date/time> /to <end date/time>' to add an event.
-                    - Date/time format: DD-MM-YYYY HHMM (e.g. 01-01-2025 1800)
-                6. Use 'mark <task>' or 'mark' <task number> to mark a task as done.
-                    - Use 'mark backdated' to mark all tasks with passed deadlines/events as done.
-                7. Use 'unmark <task>' or 'unmark' <task number> to unmark a task as not done.
-                8. Use 'delete' <task> or <task number> to delete a task from list and storage.
-                    - Use 'delete all done' to delete all completed tasks at once.
-                9. Type 'bye' to exit the chat.
+                1.  Type 'command' to see all command available.
+                2.  Type 'list' to see all your tasks.
+                3.  Use 'todo <task>' to add a simple task.
+                4.  Use 'deadline <task> /by <date/time>' to add a task with a deadline.
+                      - Date/time format: DD-MM-YYYY HHmm (e.g. 01-01-2025 1800)
+                5.  Use 'event <task> /from <start date/time> /to <end date/time>' to add an event.
+                      - Date/time format: DD-MM-YYYY HHmm (e.g. 01-01-2025 1800)
+                6.  Use 'mark <task>' or 'mark' <task number> to mark a task as done.
+                      - Use 'mark backdated' to mark all tasks with passed deadlines/events as done.
+                7.  Use 'unmark <task>' or 'unmark' <task number> to unmark a task as not done.
+                8.  Use 'delete' <task> or <task number> to delete a task from list and storage.
+                      - Use 'delete all done' to delete all completed tasks at once.
+                9.  Use 'schedule <date>' to view tasks scheduled for a specific date.
+                      - Date format: DD-MM-YYYY (e.g. 26-10-2025)
+                      - Shortcuts: schedule <today>, <tomorrow>, <yesterday>
+                10. Type 'bye' to exit the chat.
             """;
 
     /**
@@ -41,8 +48,8 @@ public class Ui {
     public void startMsg() {
         printHorzLine();
         printMessage(
-                String.format("Hello! I'm %s, here to help you manage your tasks.", BOTNAME));
-        printMessage("Type \"command\" to see all availble command");
+                String.format("Hello! I'm %s, here to help you manage your tasks.", BOT_NAME));
+        printMessage("Type \"command\" to see all available command");
         printHorzLine();
     }
 
@@ -67,7 +74,7 @@ public class Ui {
             printMessage(
                     ("Here's what's on your task list so far: " + "(" + taskList.size() + " in total)").indent(4));
             for (int i = 0; i < taskList.size(); i++) {
-                System.out.println((((i + 1) + ". " + taskList.get(i)).indent(8)));
+                printMessage((((i + 1) + ". " + taskList.get(i)).indent(8)));
             }
         }
     }
@@ -78,7 +85,7 @@ public class Ui {
      * @return the user guide message string
      */
     public String getUserGuideMsg() {
-        return USERGUIDEMSG;
+        return USER_GUIDE_MSG;
     }
 
     /**
@@ -96,4 +103,93 @@ public class Ui {
     public void printLine() {
         System.out.println();
     }
+
+    /**
+     * Displays the schedule of tasks for a specific date, grouped by task type.
+     * Tasks are categorized into "Deadlines" and "Events" sections, with each section
+     * numbered independently.
+     * Shows all tasks (deadlines and events) that occur on the given date,
+     * categorized, numbered and formatted for readability.
+     * If no tasks are scheduled, displays an appropriate message.
+     *
+     * @param tasks the TaskList containing all tasks to check
+     * @param date the date for which to display the schedule
+     */
+    public void showSchedule(TaskList tasks, LocalDate date) {
+        printHorzLine();
+        printMessage("Schedule for " + DateTimeParser.formatForSchedule(date) + ":");
+
+        ArrayList<Task> deadlines = new ArrayList<>();
+        ArrayList<Task> events = new ArrayList<>();
+
+        filterAndGroupTasks(tasks, date, deadlines, events);
+        displayScheduleContent(deadlines, events);
+
+        printHorzLine();
+    }
+
+    /**
+     * Filters tasks by the specified date and groups them by type.
+     * Iterates through all tasks and categorizes those occurring on the given date
+     * into separate lists for Deadlines and Events. Todo tasks are excluded as they
+     * have no specific date.
+     *
+     * @param tasks the TaskList containing all tasks
+     * @param date the date to filter tasks by
+     * @param deadlines the list to populate with Deadline tasks (modified by this method)
+     * @param events the list to populate with Event tasks (modified by this method)
+     */
+    private void filterAndGroupTasks(TaskList tasks, LocalDate date,
+                                       ArrayList<Task> deadlines, ArrayList<Task> events) {
+        for (Task task : tasks.getTaskList()) {
+            if (!task.occursOn(date)) {
+                continue;
+            }
+
+            if (task instanceof Deadline) {
+                deadlines.add(task);
+            } else if (task instanceof Event) {
+                events.add(task);
+            }
+        }
+    }
+
+    /**
+     * Displays the formatted schedule content for the filtered tasks.
+     * Shows separate sections for Deadlines and Events, with a total count at the bottom.
+     * If both lists are empty, displays a message indicating no tasks are scheduled.
+     *
+     * @param deadlines the list of Deadline tasks to display
+     * @param events the list of Event tasks to display
+     */
+    private void displayScheduleContent(ArrayList<Task> deadlines, ArrayList<Task> events) {
+        if (deadlines.isEmpty() && events.isEmpty()) {
+            printMessage(("No tasks scheduled for this date.").indent(4));
+            return;
+        }
+
+        displayTaskCategory("Deadlines", deadlines);
+        displayTaskCategory("Events", events);
+        printMessage("Total: " + (deadlines.size() + events.size()) + " task(s)");
+    }
+
+    /**
+     * Displays a category of tasks with a header and numbered list.
+     * If the task list is empty, the category is not displayed.
+     * Each task is numbered starting from 1 and indented for readability.
+     *
+     * @param categoryName the name of the category (e.g., "Deadlines", "Events")
+     * @param tasks the list of tasks to display in this category
+     */
+    private void displayTaskCategory(String categoryName, ArrayList<Task> tasks) {
+        if (tasks.isEmpty()) {
+            return;
+        }
+
+        printMessage((categoryName + ":").indent(4));
+        for (int i = 0; i < tasks.size(); i++) {
+            printMessage((((i + 1) + ". " + tasks.get(i))).indent(8));
+        }
+    }
+
 }

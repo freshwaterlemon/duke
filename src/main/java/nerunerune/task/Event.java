@@ -1,5 +1,6 @@
 package nerunerune.task;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import nerunerune.parser.DateTimeParser;
@@ -113,5 +114,22 @@ public class Event extends Task {
     @Override
     public boolean isBackdated() {
         return this.toTiming.isBefore(LocalDateTime.now());
+    }
+
+    /**
+     * Checks whether this event task occurs on the specified date.
+     * Compares only the date portion of the deadline, ignoring the time component.
+     * An event occurs on a date if the date falls within the event's duration
+     * from the start date to the end date.
+     *
+     * @param date the date to check
+     * @return true if the date is within the event's start and end dates, false otherwise
+     */
+    @Override
+    public boolean occursOn(LocalDate date) {
+        LocalDate fromDate = this.fromTiming.toLocalDate();
+        LocalDate toDate = this.toTiming.toLocalDate();
+
+        return !date.isBefore(fromDate) && !date.isAfter(toDate);
     }
 }
