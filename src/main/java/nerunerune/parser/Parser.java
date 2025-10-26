@@ -137,7 +137,7 @@ public class Parser {
 
     /**
      * Parses the user input into a Command object, validating input and arguments.
-     * Supports commands: list, bye, command, schedule, mark, unmark, todo, deadline, event, and delete.
+     * Supports commands: list, bye, command, find, schedule, mark, unmark, todo, deadline, event, and delete.
      *
      * @param userInput the full input string from the user
      * @param ui the user interface instance for interaction or validation context
@@ -157,6 +157,9 @@ public class Parser {
                 return new ExitCommand();
             case "command":
                 return new ViewAllCommand();
+            case "find":
+                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
+                return new FindCommand(taskString);
             case "schedule":
                 CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
                 LocalDate scheduleDate = DateTimeParser.parseScheduleDate(taskString);

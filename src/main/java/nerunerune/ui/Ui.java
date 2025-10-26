@@ -192,4 +192,23 @@ public class Ui {
         }
     }
 
+    /**
+     * Displays the list of tasks that match the search criteria.
+     * If the list is empty, displays a "no matches found" message.
+     * Otherwise, displays each matching task with its index number.
+     *
+     * @param matchingTasks The list of tasks to display. Can be empty.
+     */
+    public void showMatchingTasks(ArrayList<Task> matchingTasks) {
+        if (matchingTasks.isEmpty()) {
+            printMessage(("No matching tasks found!").indent(4));
+        } else {
+            printMessage(("Here are all the matching tasks I can find:").indent(4));
+            for (int i = 0; i < matchingTasks.size(); i++) {
+                printMessage(((i + 1) + "." + matchingTasks.get(i)).indent(8));
+            }
+        }
+    }
+
+
 }

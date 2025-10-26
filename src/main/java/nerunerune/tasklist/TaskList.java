@@ -272,7 +272,7 @@ public class TaskList {
      * Checks if a new event overlaps with existing events.
      *
      * @param newFrom the start time of the new event
-     * @param newTo   the end time of the new event
+     * @param newTo the end time of the new event
      * @return true if there's an overlapping event, false otherwise
      */
     public boolean hasOverlappingEvent(LocalDateTime newFrom, LocalDateTime newTo) {
@@ -288,5 +288,24 @@ public class TaskList {
             }
         }
         return false;
+    }
+
+    /**
+     * Filters the task list to find all tasks containing the
+     * specified keyword (case-sensitive) in their description.
+     *
+     * @param keyword The keyword to search for in task descriptions.
+     * @return An ArrayList containing all tasks whose descriptions contain the keyword.
+     *         Returns an empty ArrayList if no matches are found.
+     */
+    public ArrayList<Task> filterTasksByKeyword(String keyword) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+
+        for (Task task : taskList) {
+            if (task.getDescription().contains(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
     }
 }
