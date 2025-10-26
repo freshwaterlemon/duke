@@ -2,12 +2,13 @@ package nerunerune;
 
 import java.io.IOException;
 import java.util.Scanner;
+
 import nerunerune.command.Command;
 import nerunerune.exception.NeruneruneException;
 import nerunerune.parser.Parser;
-import nerunerune.ui.Ui;
 import nerunerune.storage.Storage;
 import nerunerune.tasklist.TaskList;
+import nerunerune.ui.Ui;
 
 /**
  * Main class for the Nerunerune application.

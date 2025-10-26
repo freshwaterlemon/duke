@@ -12,8 +12,8 @@ public class ViewAllCommand extends Command {
     /**
      * Executes the command by displaying the user guide message to the user.
      *
-     * @param tasks the task list
-     * @param ui the user interface to display the user guide message
+     * @param tasks   the task list
+     * @param ui      the user interface to display the user guide message
      * @param storage the storage component
      */
     @Override

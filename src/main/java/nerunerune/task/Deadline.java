@@ -16,7 +16,7 @@ public class Deadline extends Task {
      * Constructs a Deadline task with the given description and deadline timing.
      *
      * @param deadlineDescription description of the deadline task
-     * @param byTiming the date and time by which the task should be completed
+     * @param byTiming            the date and time by which the task should be completed
      */
     public Deadline(String deadlineDescription, LocalDateTime byTiming) {
         super(deadlineDescription);
@@ -27,7 +27,7 @@ public class Deadline extends Task {
      * Constructs a Deadline task with the given description and completion status.
      *
      * @param deadlineDescription description of the deadline task
-     * @param isDone whether the task is marked as done
+     * @param isDone              whether the task is marked as done
      */
     public Deadline(String deadlineDescription, boolean isDone) {
         super(deadlineDescription, isDone);
@@ -37,8 +37,8 @@ public class Deadline extends Task {
      * Constructs a Deadline task with description, deadline timing, and completion status.
      *
      * @param deadlineDescription description of the deadline task
-     * @param byTiming the date and time by which the task should be completed
-     * @param isDone whether the task is marked as done
+     * @param byTiming            the date and time by which the task should be completed
+     * @param isDone              whether the task is marked as done
      */
     public Deadline(String deadlineDescription, LocalDateTime byTiming, boolean isDone) {
         super(deadlineDescription, isDone);
@@ -50,6 +50,7 @@ public class Deadline extends Task {
      *
      * @return the string "deadline"
      */
+    @Override
     public String getScheduleItem() {
         return "deadline";
     }

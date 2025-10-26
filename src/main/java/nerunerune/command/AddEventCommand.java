@@ -25,8 +25,8 @@ public class AddEventCommand extends Command {
      * Executes the command by adding an event task to the given task list,
      * then save the updated list to storage.
      *
-     * @param tasks the task list to add the event task
-     * @param ui the user interface for interaction
+     * @param tasks   the task list to add the event task
+     * @param ui      the user interface for interaction
      * @param storage the storage instance for saving tasks locally
      * @throws NeruneruneException if adding the event task fails
      */

@@ -17,9 +17,9 @@ public class Event extends Task {
      * Constructs an Event with description, start time, end time, and completion status.
      *
      * @param eventDescription description of the event
-     * @param eventFromTiming start date and time
-     * @param eventToTiming end date and time
-     * @param isDone whether the task is marked as done
+     * @param eventFromTiming  start date and time
+     * @param eventToTiming    end date and time
+     * @param isDone           whether the task is marked as done
      */
     public Event(String eventDescription, LocalDateTime eventFromTiming, LocalDateTime eventToTiming, boolean isDone) {
         super(eventDescription, isDone);
@@ -31,8 +31,8 @@ public class Event extends Task {
      * Constructs an Event with description, start time, and end time. Defaults to not done.
      *
      * @param eventDescription description of the event
-     * @param eventFromTiming start date and time
-     * @param eventToTiming end date and time
+     * @param eventFromTiming  start date and time
+     * @param eventToTiming    end date and time
      */
     public Event(String eventDescription, LocalDateTime eventFromTiming, LocalDateTime eventToTiming) {
         super(eventDescription);
@@ -45,7 +45,7 @@ public class Event extends Task {
      * Constructs an Event with description and completion status. Timing is unspecified.
      *
      * @param eventDescription description of the event
-     * @param isDone whether the task is marked as done
+     * @param isDone           whether the task is marked as done
      */
     public Event(String eventDescription, boolean isDone) {
         super(eventDescription, isDone);
@@ -56,6 +56,7 @@ public class Event extends Task {
      *
      * @return "event"
      */
+    @Override
     public String getScheduleItem() {
         return "event";
     }

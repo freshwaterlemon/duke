@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import nerunerune.exception.NeruneruneException;
-import nerunerune.task.*;
 
 /**
  * Provides utility methods to parse and format date-time strings
@@ -104,14 +103,14 @@ public class DateTimeParser {
     public static LocalDate parseScheduleDate(String dateString) throws NeruneruneException {
         try {
             switch (dateString.toLowerCase()) {
-                case "today":
-                    return LocalDate.now();
-                case "tomorrow":
-                    return LocalDate.now().plusDays(1);
-                case "yesterday":
-                    return LocalDate.now().minusDays(1);
-                default:
-                    return LocalDate.parse(dateString, DATE_ONLY_FORMATTER);
+            case "today":
+                return LocalDate.now();
+            case "tomorrow":
+                return LocalDate.now().plusDays(1);
+            case "yesterday":
+                return LocalDate.now().minusDays(1);
+            default:
+                return LocalDate.parse(dateString, DATE_ONLY_FORMATTER);
             }
         } catch (DateTimeParseException e) {
             throw new NeruneruneException("Invalid date format! Use DD-MM-YYYY or today/tomorrow/yesterday");

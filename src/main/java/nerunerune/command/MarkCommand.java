@@ -25,8 +25,8 @@ public class MarkCommand extends Command {
      * Executes the command by marking the specified task as completed in the given task list,
      * then save the updated list to storage.
      *
-     * @param tasks the task list containing the task to mark
-     * @param ui the user interface for interaction
+     * @param tasks   the task list containing the task to mark
+     * @param ui      the user interface for interaction
      * @param storage the storage instance for saving tasks locally
      * @throws NeruneruneException if marking the task fails
      */

@@ -10,13 +10,13 @@ public class CommandValidator {
     /**
      * Validates that the details following a command are not empty.
      *
-     * @param command the command word (e.g. "todo", "mark")
+     * @param command    the command word (e.g. "todo", "mark")
      * @param taskString the string containing task details after the command
-     * @throws Exception if the task details are empty
+     * @throws NeruneruneException if the task details are empty
      */
-    public static void validateCommandDetails(String command, String taskString) throws Exception {
+    public static void validateCommandDetails(String command, String taskString) throws NeruneruneException {
         if (taskString.isEmpty()) {
-            throw new Exception("Details after '" + command + "' cannot be empty.");
+            throw new NeruneruneException("Details after '" + command + "' cannot be empty.");
         }
     }
 

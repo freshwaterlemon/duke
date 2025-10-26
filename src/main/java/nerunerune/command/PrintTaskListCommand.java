@@ -13,8 +13,8 @@ public class PrintTaskListCommand extends Command {
     /**
      * Executes the command by listing all tasks in the given task list.
      *
-     * @param tasks the task list to be displayed
-     * @param ui the user interface
+     * @param tasks   the task list to be displayed
+     * @param ui      the user interface
      * @param storage the storage component
      */
     @Override

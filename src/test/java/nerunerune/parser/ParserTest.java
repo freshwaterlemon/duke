@@ -1,11 +1,20 @@
 package nerunerune.parser;
 
-import nerunerune.task.*;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import nerunerune.exception.NeruneruneException;
+import nerunerune.task.Deadline;
+import nerunerune.task.Event;
+import nerunerune.task.Task;
+import nerunerune.task.Todo;
 
 public class ParserTest {
 
@@ -50,23 +59,23 @@ public class ParserTest {
 
     // parseTodo tests
     @Test
-    public void parseTodo_validInput_returnTodoInstance(){
+    public void parseTodo_validInput_returnTodoInstance() {
         Task task = Parser.parseTodo("buy books");
         assertInstanceOf(Todo.class, task);
     }
 
     // parseDeadline tests
     @Test
-    public void parseDeadline_validInput_returnDeadlineInstance(){
-        Task task = Parser.parseTodo("buy books");
-        assertInstanceOf(Todo.class, task);
+    public void parseDeadline_validInput_returnDeadlineInstance() throws IOException, NeruneruneException {
+        Task task = Parser.parseDeadline("buy books /by 01-02-2025 1500");
+        assertInstanceOf(Deadline.class, task);
     }
 
     // parseEvent tests
     @Test
-    public void parseEvent_validInput_returnEventInstance(){
-        Task task = Parser.parseTodo("buy books");
-        assertInstanceOf(Todo.class, task);
+    public void parseEvent_validInput_returnEventInstance() throws IOException, NeruneruneException {
+        Task task = Parser.parseEvent("meeting  /from 01-02-2025 1500 /to 01-02-2025 1530");
+        assertInstanceOf(Event.class, task);
     }
 
     @Test

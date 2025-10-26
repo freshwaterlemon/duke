@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import nerunerune.parser.DateTimeParser;
-import nerunerune.task.*;
+import nerunerune.task.Deadline;
+import nerunerune.task.Event;
+import nerunerune.task.Task;
 import nerunerune.tasklist.TaskList;
 
 /**
@@ -16,7 +18,7 @@ public class Ui {
     private static final String HORIZONTAL_LINE = "____________________________________________________________";
     private static final String USER_GUIDE_MSG = """
             List of Task Commands Available:
-
+            
                 1.  Type 'command' to see all command available.
                 2.  Type 'list' to see all your tasks.
                 3.  Use 'todo <task>' to add a simple task.
@@ -74,7 +76,7 @@ public class Ui {
             printMessage(
                     ("Here's what's on your task list so far: " + "(" + taskList.size() + " in total)").indent(4));
             for (int i = 0; i < taskList.size(); i++) {
-                printMessage((((i + 1) + ". " + taskList.get(i)).indent(8)));
+                printMessage(((i + 1) + ". " + taskList.get(i)).indent(8));
             }
         }
     }
@@ -113,7 +115,7 @@ public class Ui {
      * If no tasks are scheduled, displays an appropriate message.
      *
      * @param tasks the TaskList containing all tasks to check
-     * @param date the date for which to display the schedule
+     * @param date  the date for which to display the schedule
      */
     public void showSchedule(TaskList tasks, LocalDate date) {
         printHorzLine();
@@ -134,13 +136,13 @@ public class Ui {
      * into separate lists for Deadlines and Events. Todo tasks are excluded as they
      * have no specific date.
      *
-     * @param tasks the TaskList containing all tasks
-     * @param date the date to filter tasks by
+     * @param tasks     the TaskList containing all tasks
+     * @param date      the date to filter tasks by
      * @param deadlines the list to populate with Deadline tasks (modified by this method)
-     * @param events the list to populate with Event tasks (modified by this method)
+     * @param events    the list to populate with Event tasks (modified by this method)
      */
     private void filterAndGroupTasks(TaskList tasks, LocalDate date,
-                                       ArrayList<Task> deadlines, ArrayList<Task> events) {
+                                     ArrayList<Task> deadlines, ArrayList<Task> events) {
         for (Task task : tasks.getTaskList()) {
             if (!task.occursOn(date)) {
                 continue;
@@ -160,7 +162,7 @@ public class Ui {
      * If both lists are empty, displays a message indicating no tasks are scheduled.
      *
      * @param deadlines the list of Deadline tasks to display
-     * @param events the list of Event tasks to display
+     * @param events    the list of Event tasks to display
      */
     private void displayScheduleContent(ArrayList<Task> deadlines, ArrayList<Task> events) {
         if (deadlines.isEmpty() && events.isEmpty()) {
@@ -179,7 +181,7 @@ public class Ui {
      * Each task is numbered starting from 1 and indented for readability.
      *
      * @param categoryName the name of the category (e.g., "Deadlines", "Events")
-     * @param tasks the list of tasks to display in this category
+     * @param tasks        the list of tasks to display in this category
      */
     private void displayTaskCategory(String categoryName, ArrayList<Task> tasks) {
         if (tasks.isEmpty()) {
@@ -188,7 +190,7 @@ public class Ui {
 
         printMessage((categoryName + ":").indent(4));
         for (int i = 0; i < tasks.size(); i++) {
-            printMessage((((i + 1) + ". " + tasks.get(i))).indent(8));
+            printMessage(((i + 1) + ". " + tasks.get(i)).indent(8));
         }
     }
 
@@ -205,7 +207,7 @@ public class Ui {
         } else {
             printMessage(("Here are all the matching tasks I can find:").indent(4));
             for (int i = 0; i < matchingTasks.size(); i++) {
-                printMessage(((i + 1) + "." + matchingTasks.get(i)).indent(8));
+                printMessage(((i + 1) + ". " + matchingTasks.get(i)).indent(8));
             }
         }
     }

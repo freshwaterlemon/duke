@@ -13,8 +13,8 @@ public abstract class Command {
     /**
      * Executes the command using the provided task list, UI, and storage.
      *
-     * @param tasks the task list to be operated on
-     * @param ui the user interface component for interaction
+     * @param tasks   the task list to be operated on
+     * @param ui      the user interface component for interaction
      * @param storage the storage component for saving or loading tasks locally
      * @throws NeruneruneException if an error occurs during execution
      */

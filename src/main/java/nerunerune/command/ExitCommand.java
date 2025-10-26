@@ -1,8 +1,8 @@
 package nerunerune.command;
 
+import nerunerune.storage.Storage;
 import nerunerune.tasklist.TaskList;
 import nerunerune.ui.Ui;
-import nerunerune.storage.Storage;
 
 /**
  * Represents a command to exit the application.
@@ -12,8 +12,8 @@ public class ExitCommand extends Command {
     /**
      * Executes the exit command by displaying the end message to the user.
      *
-     * @param tasks the task list
-     * @param ui the user interface to display the end message
+     * @param tasks   the task list
+     * @param ui      the user interface to display the end message
      * @param storage the storage component
      */
     @Override

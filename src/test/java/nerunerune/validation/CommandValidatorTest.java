@@ -1,8 +1,13 @@
 package nerunerune.validation;
 
-import nerunerune.exception.NeruneruneException;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import nerunerune.exception.NeruneruneException;
 
 public class CommandValidatorTest {
 
@@ -14,19 +19,19 @@ public class CommandValidatorTest {
 
     @Test
     public void validateCommandDetails_emptyDetails_throwsException() {
-        Exception exception = assertThrows(Exception.class, () -> CommandValidator.validateCommandDetails("todo", ""));
+        NeruneruneException exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateCommandDetails("todo", ""));
         assertEquals("Details after 'todo' cannot be empty.", exception.getMessage());
     }
 
     @Test
     public void validateCommandDetails_markCommandEmpty_throwsException() {
-        Exception exception = assertThrows(Exception.class, () -> CommandValidator.validateCommandDetails("mark", ""));
+        NeruneruneException exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateCommandDetails("mark", ""));
         assertEquals("Details after 'mark' cannot be empty.", exception.getMessage());
     }
 
     @Test
     public void validateCommandDetails_deleteCommandEmpty_throwsException() {
-        Exception exception = assertThrows(Exception.class, () -> CommandValidator.validateCommandDetails("delete", ""));
+        NeruneruneException exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateCommandDetails("delete", ""));
         assertEquals("Details after 'delete' cannot be empty.", exception.getMessage());
     }
 
@@ -38,25 +43,25 @@ public class CommandValidatorTest {
 
     @Test
     public void validateUserInputNotEmpty_nullInput_throwNeruneruneException() {
-        Exception exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateUserInputNotEmpty(null));
+        NeruneruneException exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateUserInputNotEmpty(null));
         assertTrue(exception.getMessage().contains("Oops! You didn't type anything"));
     }
 
     @Test
     public void validateUserInputNotEmpty_emptyString_throwNeruneruneException() {
-        Exception exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateUserInputNotEmpty(""));
+        NeruneruneException exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateUserInputNotEmpty(""));
         assertTrue(exception.getMessage().contains("Oops! You didn't type anything"));
     }
 
     @Test
     public void validateUserInputNotEmpty_whitespaceOnly_throwNeruneruneException() {
-        Exception exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateUserInputNotEmpty("   "));
+        NeruneruneException exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateUserInputNotEmpty("   "));
         assertTrue(exception.getMessage().contains("Oops! You didn't type anything"));
     }
 
     @Test
     public void validateUserInputNotEmpty_tabsAndSpaces_throwNeruneruneException() {
-        Exception exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateUserInputNotEmpty("\t  \n  "));
+        NeruneruneException exception = assertThrows(NeruneruneException.class, () -> CommandValidator.validateUserInputNotEmpty("\t  \n  "));
         assertTrue(exception.getMessage().contains("Oops! You didn't type anything"));
     }
 

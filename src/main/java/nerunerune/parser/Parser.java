@@ -1,17 +1,28 @@
 package nerunerune.parser;
 
-import nerunerune.ui.Ui;
-import nerunerune.validation.CommandValidator;
-import nerunerune.task.Task;
-import nerunerune.task.Todo;
-import nerunerune.task.Deadline;
-import nerunerune.task.Event;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import nerunerune.command.*;
+import nerunerune.command.AddDeadlineCommand;
+import nerunerune.command.AddEventCommand;
+import nerunerune.command.AddTodoCommand;
+import nerunerune.command.Command;
+import nerunerune.command.DeleteCommand;
+import nerunerune.command.ExitCommand;
+import nerunerune.command.FindCommand;
+import nerunerune.command.MarkCommand;
+import nerunerune.command.PrintTaskListCommand;
+import nerunerune.command.ScheduleCommand;
+import nerunerune.command.UnmarkCommand;
+import nerunerune.command.ViewAllCommand;
 import nerunerune.exception.NeruneruneException;
+import nerunerune.task.Deadline;
+import nerunerune.task.Event;
+import nerunerune.task.Task;
+import nerunerune.task.Todo;
+import nerunerune.ui.Ui;
+import nerunerune.validation.CommandValidator;
 
 /**
  * Provides methods to parse user input into commands or tasks.
@@ -56,7 +67,7 @@ public class Parser {
      *
      * @param description the full deadline description including "/by" delimiter and timing
      * @return new Deadline task instance
-     * @throws IOException if the description does not contain "/by"
+     * @throws IOException         if the description does not contain "/by"
      * @throws NeruneruneException if date-time parsing fails
      */
     public static Deadline parseDeadline(String description) throws IOException, NeruneruneException {
@@ -75,9 +86,9 @@ public class Parser {
     /**
      * Parses an event task description into an Event object.
      *
-     * @param description the full event description including "/from" and "/to" delimiters with timings
+     * @param description full event description including "/from" and "/to" delimiters with timings
      * @return new Event task instance
-     * @throws IOException if delimiters are missing or in wrong order
+     * @throws IOException         if delimiters are missing or in wrong order
      * @throws NeruneruneException if date-time parsing fails
      */
     public static Event parseEvent(String description) throws IOException, NeruneruneException {
@@ -102,7 +113,7 @@ public class Parser {
      *
      * @param line the stored task line string, formatted with delimiters
      * @return Task object corresponding to the stored line
-     * @throws IOException if the line is corrupted or task type unknown
+     * @throws IOException         if the line is corrupted or task type unknown
      * @throws NeruneruneException if stored date-time parsing fails
      */
     public static Task parseTaskLine(String line) throws IOException, NeruneruneException {
@@ -115,23 +126,23 @@ public class Parser {
         String description = parts[2];
 
         switch (taskType) {
-            case "T": // todo
-                if (parts.length > 3)
-                    throw new IOException("Corrupted todo line: " + line);
-                return new Todo(description, isDone);
-            case "D": // deadline
-                if (parts.length < 4)
-                    throw new IOException("Corrupted deadline line: " + line);
-                LocalDateTime deadlineBy = DateTimeParser.parseStorageDateTime(parts[3]);
-                return new Deadline(description, deadlineBy, isDone);
-            case "E": // event
-                if (parts.length < 5)
-                    throw new IOException("Corrupted event line: " + line);
-                LocalDateTime eventFrom = DateTimeParser.parseStorageDateTime(parts[3]);
-                LocalDateTime eventTo = DateTimeParser.parseStorageDateTime(parts[4]);
-                return new Event(description, eventFrom, eventTo, isDone);
-            default:
-                throw new IOException("Unknown task type in line: " + line);
+        case "T": // todo
+            if (parts.length > 3)
+                throw new IOException("Corrupted todo line: " + line);
+            return new Todo(description, isDone);
+        case "D": // deadline
+            if (parts.length < 4)
+                throw new IOException("Corrupted deadline line: " + line);
+            LocalDateTime deadlineBy = DateTimeParser.parseStorageDateTime(parts[3]);
+            return new Deadline(description, deadlineBy, isDone);
+        case "E": // event
+            if (parts.length < 5)
+                throw new IOException("Corrupted event line: " + line);
+            LocalDateTime eventFrom = DateTimeParser.parseStorageDateTime(parts[3]);
+            LocalDateTime eventTo = DateTimeParser.parseStorageDateTime(parts[4]);
+            return new Event(description, eventFrom, eventTo, isDone);
+        default:
+            throw new IOException("Unknown task type in line: " + line);
         }
     }
 
@@ -140,51 +151,51 @@ public class Parser {
      * Supports commands: list, bye, command, find, schedule, mark, unmark, todo, deadline, event, and delete.
      *
      * @param userInput the full input string from the user
-     * @param ui the user interface instance for interaction or validation context
+     * @param ui        the user interface instance for interaction or validation context
      * @return the Command object representing the user's requested action
      * @throws NeruneruneException for unknown commands or invalid input formats
      */
-    public static Command parseCommand(String userInput, Ui ui) throws Exception {
+    public static Command parseCommand(String userInput, Ui ui) throws NeruneruneException {
         CommandValidator.validateUserInputNotEmpty(userInput);
 
-        String ExtractedCommand = getCommand(userInput);
+        String extractedCommand = getCommand(userInput);
         String taskString = getArguments(userInput);
 
-        switch (ExtractedCommand) {
-            case "list":
-                return new PrintTaskListCommand();
-            case "bye":
-                return new ExitCommand();
-            case "command":
-                return new ViewAllCommand();
-            case "find":
-                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
-                return new FindCommand(taskString);
-            case "schedule":
-                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
-                LocalDate scheduleDate = DateTimeParser.parseScheduleDate(taskString);
-                return new ScheduleCommand(scheduleDate);
-            case "mark":
-                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
-                return new MarkCommand(taskString);
-            case "unmark":
-                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
-                return new UnmarkCommand(taskString);
-            case "todo":
-                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
-                return new AddTodoCommand(taskString);
-            case "deadline":
-                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
-                return new AddDeadlineCommand(taskString);
-            case "event":
-                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
-                return new AddEventCommand(taskString);
-            case "delete":
-                CommandValidator.validateCommandDetails(ExtractedCommand, taskString);
-                return new DeleteCommand(taskString);
-            default:
-                String unknownCommandMsg = "Sorry, I do not quite get that.\nType \"command\" to see all available command";
-                throw new NeruneruneException(unknownCommandMsg);
+        switch (extractedCommand) {
+        case "list":
+            return new PrintTaskListCommand();
+        case "bye":
+            return new ExitCommand();
+        case "command":
+            return new ViewAllCommand();
+        case "find":
+            CommandValidator.validateCommandDetails(extractedCommand, taskString);
+            return new FindCommand(taskString);
+        case "schedule":
+            CommandValidator.validateCommandDetails(extractedCommand, taskString);
+            LocalDate scheduleDate = DateTimeParser.parseScheduleDate(taskString);
+            return new ScheduleCommand(scheduleDate);
+        case "mark":
+            CommandValidator.validateCommandDetails(extractedCommand, taskString);
+            return new MarkCommand(taskString);
+        case "unmark":
+            CommandValidator.validateCommandDetails(extractedCommand, taskString);
+            return new UnmarkCommand(taskString);
+        case "todo":
+            CommandValidator.validateCommandDetails(extractedCommand, taskString);
+            return new AddTodoCommand(taskString);
+        case "deadline":
+            CommandValidator.validateCommandDetails(extractedCommand, taskString);
+            return new AddDeadlineCommand(taskString);
+        case "event":
+            CommandValidator.validateCommandDetails(extractedCommand, taskString);
+            return new AddEventCommand(taskString);
+        case "delete":
+            CommandValidator.validateCommandDetails(extractedCommand, taskString);
+            return new DeleteCommand(taskString);
+        default:
+            String unknownCommandMsg = "Sorry, I do not quite get that.\nType \"command\" to see all available command";
+            throw new NeruneruneException(unknownCommandMsg);
         }
     }
 }

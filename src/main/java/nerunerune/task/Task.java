@@ -24,7 +24,7 @@ public abstract class Task {
      * Constructs a Task with the given description and completion status.
      *
      * @param description the description of the task
-     * @param isDone true if the task is completed, false otherwise
+     * @param isDone      true if the task is completed, false otherwise
      */
     public Task(String description, boolean isDone) {
         this.description = description;
@@ -106,6 +106,7 @@ public abstract class Task {
 
     /**
      * Checks if this task occurs on the specified date.
+     *
      * @param date The date to check
      * @return true if the task occurs on this date, false otherwise
      */
