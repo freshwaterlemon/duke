@@ -1,9 +1,14 @@
 package nerunerune.ui;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import nerunerune.command.Command;
+import nerunerune.exception.NeruneruneException;
 import nerunerune.parser.DateTimeParser;
+import nerunerune.storage.Storage;
 import nerunerune.task.Deadline;
 import nerunerune.task.Event;
 import nerunerune.task.Task;
@@ -38,6 +43,16 @@ public class Ui {
             """;
 
     /**
+     * Gets the starting greeting message for GUI display.
+     *
+     * @return The greeting message as a String
+     */
+    public static String getStartMsg() {
+        return String.format("Hello! I'm %s, here to help you manage your tasks.", BOT_NAME)
+                + "\nType \"command\" to see all available command";
+    }
+
+    /**
      * Prints a horizontal line for visual separation.
      */
     private void printHorzLine() {
@@ -60,7 +75,6 @@ public class Ui {
      */
     public void endMsg() {
         printMessage(("Until next time!").indent(4));
-        printHorzLine();
     }
 
     /**
@@ -118,7 +132,6 @@ public class Ui {
      * @param date  the date for which to display the schedule
      */
     public void showSchedule(TaskList tasks, LocalDate date) {
-        printHorzLine();
         printMessage("Schedule for " + DateTimeParser.formatForSchedule(date) + ":");
 
         ArrayList<Task> deadlines = new ArrayList<>();
@@ -127,7 +140,6 @@ public class Ui {
         filterAndGroupTasks(tasks, date, deadlines, events);
         displayScheduleContent(deadlines, events);
 
-        printHorzLine();
     }
 
     /**
@@ -209,6 +221,54 @@ public class Ui {
             for (int i = 0; i < matchingTasks.size(); i++) {
                 printMessage(((i + 1) + ". " + matchingTasks.get(i)).indent(8));
             }
+        }
+    }
+
+    /**
+     * Executes a command and captures its output as a String for GUI display.
+     * The output is simultaneously written to both the console (for CLI visibility)
+     * and captured for GUI display, ensuring both interfaces show the same information.
+     * <p>
+     * This method temporarily redirects "System.out" to a "tee" stream that duplicates
+     * all output to both the original console and an internal capture buffer.
+     * <p>
+     *
+     * @param command  The command to execute
+     * @param taskList The task list to operate on
+     * @param storage  The storage handler for persistence
+     * @return The captured output as a String, trimmed of leading/trailing whitespace
+     * @throws NeruneruneException if command execution fails
+     */
+    // implemented with help of AI
+    public String executeAndCapture(Command command, TaskList taskList, Storage storage)
+            throws NeruneruneException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+
+        // create a "tee" stream that writes to both original output and capture
+        PrintStream teeStream = new PrintStream(baos) {
+            @Override
+            public void write(int b) {
+                super.write(b);
+                originalOut.write(b);  // write to original System.out
+            }
+
+            @Override
+            public void write(byte[] buf, int off, int len) {
+                super.write(buf, off, len);
+                originalOut.write(buf, off, len);  // write to original System.out
+            }
+        };
+
+        System.setOut(teeStream);
+
+        try {
+            command.execute(taskList, this, storage);
+            teeStream.flush();
+            originalOut.flush();
+            return baos.toString().trim();
+        } finally {
+            System.setOut(originalOut);
         }
     }
 
