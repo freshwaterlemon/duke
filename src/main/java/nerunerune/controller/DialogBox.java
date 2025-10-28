@@ -26,6 +26,7 @@ import javafx.scene.layout.VBox;
  * (image on right) and bot responses (image on left).
  */
 public class DialogBox extends HBox {
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
     @FXML
     private Label dialog;
     @FXML
@@ -34,8 +35,6 @@ public class DialogBox extends HBox {
     private ImageView displayPicture;
     @FXML
     private VBox messageContainer;
-
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
 
     /**
      * Creates a DialogBox with the specified text and image.
@@ -52,7 +51,7 @@ public class DialogBox extends HBox {
             fxmlLoader.setRoot(this);
             fxmlLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error loading FXML: " + e.getMessage());
         }
 
         dialog.setText(text);
