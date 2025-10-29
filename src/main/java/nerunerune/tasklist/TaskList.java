@@ -45,16 +45,6 @@ public class TaskList {
     }
 
     /**
-     * Saves the current tasks to storage.
-     *
-     * @throws NeruneruneException if saving fails
-     * @throws IOException         if an IO error occurs during writing
-     */
-    public void saveTasks() throws NeruneruneException, IOException {
-        storage.saveTasksToStorage(getTaskList());
-    }
-
-    /**
      * Prints the current list of tasks using the UI component.
      */
     public void listTasks() {
@@ -76,9 +66,16 @@ public class TaskList {
      * @param task the task to add
      */
     public void addTask(Task task) {
+        assert task != null : "task to add should not be null";
+
+        int sizeBeforeAdd = taskList.size();
         taskList.add(task);
+
+        assert taskList.size() == sizeBeforeAdd + 1 : "Task list size should increase by 1";
+        assert taskList.contains(task) : "Task should be in the list after adding";
+
         ui.printMessage(("Got it, task added to your task list.").indent(4));
-        ui.printMessage((task.toString() + "\n").indent(8));
+        ui.printMessage((task + "\n").indent(8));
         ui.printMessage(("Now you have " + taskList.size() + " tasks in the list.\n").indent(4));
     }
 
@@ -183,6 +180,8 @@ public class TaskList {
 
         for (int i = startFrom; i != endAt; i += step) {
             Task task = taskList.get(i);
+            assert task != null : "task in list should not be null";
+
             if (task.getDescription().equalsIgnoreCase(description) && task.getIsDone() == doneStatus) {
                 return task;
             }

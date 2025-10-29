@@ -20,7 +20,6 @@ import nerunerune.tasklist.TaskList;
  */
 public class Ui {
     private static final String BOT_NAME = "Nerunerune";
-    private static final String HORIZONTAL_LINE = "____________________________________________________________";
     private static final String USER_GUIDE_MSG = """
             List of Task Commands Available:
             
@@ -50,24 +49,6 @@ public class Ui {
     public static String getStartMsg() {
         return String.format("Hello! I'm %s, here to help you manage your tasks.", BOT_NAME)
                 + "\nType \"command\" to see all available command";
-    }
-
-    /**
-     * Prints a horizontal line for visual separation.
-     */
-    private void printHorzLine() {
-        printMessage(HORIZONTAL_LINE);
-    }
-
-    /**
-     * Prints the starting greeting message with bot name and command hint.
-     */
-    public void startMsg() {
-        printHorzLine();
-        printMessage(
-                String.format("Hello! I'm %s, here to help you manage your tasks.", BOT_NAME));
-        printMessage("Type \"command\" to see all available command");
-        printHorzLine();
     }
 
     /**
@@ -111,13 +92,6 @@ public class Ui {
      */
     public void printMessage(String message) {
         System.out.println(message);
-    }
-
-    /**
-     * Prints a blank line to the standard output for spacing.
-     */
-    public void printLine() {
-        System.out.println();
     }
 
     /**

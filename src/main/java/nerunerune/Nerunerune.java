@@ -40,6 +40,9 @@ public class Nerunerune extends Application {
      * @param filePath The file path where tasks are stored and loaded from
      */
     public Nerunerune(String filePath) {
+        assert filePath != null : "file path should not be null";
+        assert !filePath.isEmpty() : "file path should not be empty";
+
         ui = new Ui();
         storage = new Storage(filePath);
         taskList = new TaskList(storage, ui);
