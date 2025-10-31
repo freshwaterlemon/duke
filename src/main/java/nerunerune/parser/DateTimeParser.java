@@ -92,25 +92,30 @@ public class DateTimeParser {
     }
 
     /**
-     * Parses a date string from user input for schedule commands.
-     * Supports shortcuts "today", "tomorrow", and "yesterday", as well as
-     * dates in DD-MM-YYYY format.
+     * Parses a date string from user input with keyword support.
+     * Supports shortcuts "today", "tomorrow", "yesterday", "next week", "next month",
+     * as well as dates in DD-MM-YYYY format.
      *
      * @param dateString the date string to parse (e.g., "today", "25-10-2025")
-     * @return the parsed LocalDate
+     * @return the parsed LocalDateTime at start of day
      * @throws NeruneruneException if the date format is invalid or cannot be parsed
      */
-    public static LocalDate parseScheduleDate(String dateString) throws NeruneruneException {
+    public static LocalDateTime parseDateWithKeywords(String dateString) throws NeruneruneException {
         try {
             switch (dateString.toLowerCase()) {
             case "today":
-                return LocalDate.now();
+                return LocalDate.now().atStartOfDay();
             case "tomorrow":
-                return LocalDate.now().plusDays(1);
+                return LocalDate.now().plusDays(1).atStartOfDay();
             case "yesterday":
-                return LocalDate.now().minusDays(1);
+                return LocalDate.now().minusDays(1).atStartOfDay();
+            case "next week":
+                return LocalDate.now().plusWeeks(1).atStartOfDay();
+            case "next month":
+                return LocalDate.now().plusMonths(1).atStartOfDay();
             default:
-                return LocalDate.parse(dateString, DATE_ONLY_FORMATTER);
+//                return LocalDate.parse(dateString, DATE_ONLY_FORMATTER).atStartOfDay();
+                return parseDateTime(dateString);
             }
         } catch (DateTimeParseException e) {
             throw new NeruneruneException("Invalid date format! Use DD-MM-YYYY or today/tomorrow/yesterday");

@@ -126,7 +126,7 @@ public class Nerunerune extends Application {
      */
     public String getResponse(String input) {
         try {
-            Command userCommand = Parser.parseCommand(input);
+            Command userCommand = Parser.parseCommand(input.trim());
             String output = ui.executeAndCapture(userCommand, taskList, storage);
             return output.isEmpty() ? "Command executed successfully!" : output;
 

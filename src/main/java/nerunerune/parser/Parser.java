@@ -38,7 +38,7 @@ public class Parser {
      * @return the command word in lowercase (e.g. todo, list, mark)
      */
     public static String getCommand(String userInput) {
-        return userInput.split(" ")[0].toLowerCase();
+        return userInput.trim().split(" ")[0].toLowerCase();
     }
 
     /**
@@ -78,8 +78,17 @@ public class Parser {
         String deadlineDescription = description.substring(0, findIndex).trim();
         String deadlineTiming = description.substring(findIndex + 3).trim();
 
+//        // Try keyword first, fall back to parseDateTime
+//        LocalDateTime byTiming;
+//        try {
+//            byTiming = DateTimeParser.parseDateWithKeywords(deadlineTiming).atStartOfDay();
+//        } catch (NeruneruneException e) {
+//            // not a keyword, try standard parsing
+//            byTiming = DateTimeParser.parseDateTime(deadlineTiming);
+//        }
+
         // create dates from strings
-        LocalDateTime byTiming = DateTimeParser.parseDateTime(deadlineTiming);
+        LocalDateTime byTiming = DateTimeParser.parseDateWithKeywords(deadlineTiming);
         return new Deadline(deadlineDescription, byTiming);
     }
 
@@ -172,7 +181,7 @@ public class Parser {
             return new FindCommand(taskString);
         case "schedule":
             CommandValidator.validateCommandDetails(extractedCommand, taskString);
-            LocalDate scheduleDate = DateTimeParser.parseScheduleDate(taskString);
+            LocalDate scheduleDate = DateTimeParser.parseDateWithKeywords(taskString).toLocalDate();
             return new ScheduleCommand(scheduleDate);
         case "mark":
             CommandValidator.validateCommandDetails(extractedCommand, taskString);
