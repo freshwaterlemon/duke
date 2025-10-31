@@ -48,7 +48,7 @@ public class Ui {
      */
     public static String getStartMsg() {
         return String.format("Hello! I'm %s, here to help you manage your tasks.", BOT_NAME)
-                + "\nType \"command\" to see all available command";
+                + "\n\nType \"command\" to see all available command";
     }
 
     /**
@@ -152,7 +152,7 @@ public class Ui {
      */
     private void displayScheduleContent(ArrayList<Task> deadlines, ArrayList<Task> events) {
         if (deadlines.isEmpty() && events.isEmpty()) {
-            printMessage(("No tasks scheduled for this date.").indent(4));
+            printMessage("\nNo tasks scheduled for this date.");
             return;
         }
 
@@ -191,7 +191,7 @@ public class Ui {
         if (matchingTasks.isEmpty()) {
             printMessage(("No matching tasks found!").indent(4));
         } else {
-            printMessage(("Here are all the matching tasks I can find:").indent(4));
+            printMessage(("Here are all the matching tasks I can find:\n").indent(4));
             for (int i = 0; i < matchingTasks.size(); i++) {
                 printMessage(((i + 1) + ". " + matchingTasks.get(i)).indent(8));
             }

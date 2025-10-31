@@ -40,7 +40,7 @@ public class DateTimeParser {
             }
         } catch (DateTimeParseException e) {
             throw new NeruneruneException(
-                    "Invalid time detected. Hours must be between 00 and 23, and minutes between 00 and 59.\nPlease enter time in 24-hour HHmm format.");
+                    "Invalid time detected. Hours must be between 00 and 23, and minutes between 00 and 59.\n\nPlease enter time in 24-hour HHmm format.");
 
         }
     }

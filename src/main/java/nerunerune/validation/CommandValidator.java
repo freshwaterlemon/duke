@@ -28,7 +28,7 @@ public class CommandValidator {
      */
     public static void validateUserInputNotEmpty(String userInput) throws NeruneruneException {
         if (userInput == null || userInput.trim().isEmpty()) {
-            throw new NeruneruneException(("Oops! You didn't type anything. Go ahead, give me a task!\n").indent(4));
+            throw new NeruneruneException("Oops! You didn't type anything\n");
         }
     }
 

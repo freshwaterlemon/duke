@@ -151,11 +151,10 @@ public class Parser {
      * Supports commands: list, bye, command, find, schedule, mark, unmark, todo, deadline, event, and delete.
      *
      * @param userInput the full input string from the user
-     * @param ui        the user interface instance for interaction or validation context
      * @return the Command object representing the user's requested action
      * @throws NeruneruneException for unknown commands or invalid input formats
      */
-    public static Command parseCommand(String userInput, Ui ui) throws NeruneruneException {
+    public static Command parseCommand(String userInput) throws NeruneruneException {
         CommandValidator.validateUserInputNotEmpty(userInput);
 
         String extractedCommand = getCommand(userInput);
