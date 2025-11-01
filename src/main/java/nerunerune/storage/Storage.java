@@ -139,6 +139,7 @@ public class Storage {
                 } catch (IOException e) {
                     System.out.println("Storage file appears corrupted: " + e.getMessage());
                     handleCorruptedFile(f, taskList);
+                    return;
                 }
             }
         }

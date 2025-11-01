@@ -24,7 +24,7 @@ import nerunerune.ui.Ui;
  *
  */
 public class Nerunerune extends Application {
-    private static final String DEFAULT_STORAGE_FILEPATH = "data/tasks.txt";
+    private static final String DEFAULT_STORAGE_FILEPATH = "nerunerune/data/tasks.txt";
 
     private final Ui ui;
     private final Storage storage;
