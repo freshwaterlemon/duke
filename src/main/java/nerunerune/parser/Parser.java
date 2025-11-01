@@ -21,7 +21,6 @@ import nerunerune.task.Deadline;
 import nerunerune.task.Event;
 import nerunerune.task.Task;
 import nerunerune.task.Todo;
-import nerunerune.ui.Ui;
 import nerunerune.validation.CommandValidator;
 
 /**
@@ -77,15 +76,6 @@ public class Parser {
         }
         String deadlineDescription = description.substring(0, findIndex).trim();
         String deadlineTiming = description.substring(findIndex + 3).trim();
-
-//        // Try keyword first, fall back to parseDateTime
-//        LocalDateTime byTiming;
-//        try {
-//            byTiming = DateTimeParser.parseDateWithKeywords(deadlineTiming).atStartOfDay();
-//        } catch (NeruneruneException e) {
-//            // not a keyword, try standard parsing
-//            byTiming = DateTimeParser.parseDateTime(deadlineTiming);
-//        }
 
         // create dates from strings
         LocalDateTime byTiming = DateTimeParser.parseDateWithKeywords(deadlineTiming);
@@ -171,10 +161,13 @@ public class Parser {
 
         switch (extractedCommand) {
         case "list":
+            CommandValidator.validateNoArguments(extractedCommand, taskString);
             return new PrintTaskListCommand();
         case "bye":
+            CommandValidator.validateNoArguments(extractedCommand, taskString);
             return new ExitCommand();
         case "command":
+            CommandValidator.validateNoArguments(extractedCommand, taskString);
             return new ViewAllCommand();
         case "find":
             CommandValidator.validateCommandDetails(extractedCommand, taskString);
