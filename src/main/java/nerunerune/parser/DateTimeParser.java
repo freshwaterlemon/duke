@@ -39,8 +39,14 @@ public class DateTimeParser {
                 return LocalDateTime.parse(dateTimeString, INPUT_FORMATTER);
             }
         } catch (DateTimeParseException e) {
-            throw new NeruneruneException(
-                    "Invalid time detected. Hours must be between 00 and 23, and minutes between 00 and 59.\n\nPlease enter time in 24-hour HHmm format.");
+            throw new NeruneruneException("""
+                    Invalid date and time detected.
+                    
+                    Date must be within range
+                    
+                    Hours must be between 00 and 23, and minutes between 00 and 59.
+                    
+                    Note: time to be in 24-hour HHmm format.""");
 
         }
     }
