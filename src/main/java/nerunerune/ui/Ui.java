@@ -23,22 +23,25 @@ public class Ui {
     private static final String USER_GUIDE_MSG = """
             List of Task Commands Available:
             
-                1.  Type 'command' to see all command available.
-                2.  Type 'list' to see all your tasks.
-                3.  Use 'todo <task>' to add a simple task.
-                4.  Use 'deadline <task> /by <date/time>' to add a task with a deadline.
-                      - Date/time format: DD-MM-YYYY HHmm (e.g. 01-01-2025 1800)
-                5.  Use 'event <task> /from <start date/time> /to <end date/time>' to add an event.
-                      - Date/time format: DD-MM-YYYY HHmm (e.g. 01-01-2025 1800)
-                6.  Use 'mark <task>' or 'mark' <task number> to mark a task as done.
-                      - Use 'mark backdated' to mark all tasks with passed deadlines/events as done.
-                7.  Use 'unmark <task>' or 'unmark' <task number> to unmark a task as not done.
-                8.  Use 'delete' <task> or <task number> to delete a task from list and storage.
-                      - Use 'delete all done' to delete all completed tasks at once.
-                9.  Use 'schedule <date>' to view tasks scheduled for a specific date.
-                      - Date format: DD-MM-YYYY (e.g. 26-10-2025)
-                      - Shortcuts: schedule <today>, <tomorrow>, <yesterday>
-                10. Type 'bye' to exit the chat.
+            1.  Type 'command' to see all commands available.
+            2.  Type 'list' to see all your tasks.
+            3.  Use 'find <keyword>' to search for tasks containing a keyword.
+            4.  Use 'todo <task>' to add a simple task.
+            5.  Use 'deadline <task> /by <date/time>' to add a task with a deadline.
+                  - Date/time format: DD-MM-YYYY HHmm (e.g. 01-01-2025 1800)
+                  - Shortcuts: deadline <task> /by <today>, <tomorrow>, <next week>, <next month>
+            6.  Use 'event <task> /from <start date/time> /to <end date/time>' to add an event.
+                  - Date/time format: DD-MM-YYYY HHmm (e.g. 01-01-2025 1800)
+                  - Note: Events that overlap with existing events cannot be added.
+            7.  Use 'mark <task>' or 'mark <task number>' to mark a task as done.
+                  - Use 'mark backdated' to mark all tasks with passed deadlines/events as done.
+            8.  Use 'unmark <task>' or 'unmark <task number>' to unmark a task as not done.
+            9.  Use 'delete <task>' or 'delete <task number>' to delete a task from list and storage.
+                  - Use 'delete all done' to delete all completed tasks at once.
+            10. Use 'schedule <date>' to view tasks scheduled for a specific date.
+                  - Date format: DD-MM-YYYY (e.g. 26-10-2025)
+                  - Shortcuts: schedule <today>, <tomorrow>, <yesterday>
+            11. Type 'bye' to exit the chat.
             """;
 
     /**
