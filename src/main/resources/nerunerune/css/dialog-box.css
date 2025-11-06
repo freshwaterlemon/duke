@@ -34,3 +34,12 @@
     -fx-scale-y: 1;
     -fx-rotate: 0;
 }
+
+/* dialog box max width */
+.root {
+    -fx-max-width: 750.0;
+}
+
+#dialog {
+    -fx-max-width: 650.0;
+}
