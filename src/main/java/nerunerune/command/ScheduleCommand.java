@@ -1,39 +1,38 @@
 package nerunerune.command;
 
-import java.time.LocalDate;
-
 import nerunerune.exception.NeruneruneException;
 import nerunerune.storage.Storage;
 import nerunerune.tasklist.TaskList;
 import nerunerune.ui.Ui;
 
 /**
- * Represents a command to view the schedule for a specific date.
- * When executed, displays all tasks (deadlines and events) scheduled for the given date.
+ * Represents a command to view the schedule for a specific date or date range.
+ * When executed, displays all tasks (deadlines and events) scheduled for the given date or range.
+ * Supports single dates (e.g., "today", "tomorrow", "25-10-2025") and date ranges (e.g., "next week", "next month").
  */
 public class ScheduleCommand extends Command {
-    private final LocalDate date;
+    private final String dateString;
 
     /**
-     * Constructs a ScheduleCommand with the specified date.
+     * Constructs a ScheduleCommand with the specified date string.
      *
-     * @param date the date for which to display the schedule
+     * @param dateString the date string (e.g., "today", "next week", "25-10-2025")
      */
-    public ScheduleCommand(LocalDate date) {
-        this.date = date;
+    public ScheduleCommand(String dateString) {
+        this.dateString = dateString;
     }
 
     /**
-     * Executes the schedule command by displaying tasks scheduled for the specified date.
-     * Delegates to the UI to format and show the schedule view.
+     * Executes the schedule command by displaying tasks scheduled for the specified date or range.
+     * Delegates to the UI to format and show the schedule view with tasks grouped by date and type.
      *
      * @param tasks   the task list containing all tasks
      * @param ui      the user interface to display the schedule
-     * @param storage the storage handler (not used in this command)
-     * @throws NeruneruneException if an error occurs during execution
+     * @param storage the storage handler
+     * @throws NeruneruneException if an error occurs during execution or date parsing
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws NeruneruneException {
-        ui.showSchedule(tasks, date);
+        ui.showSchedule(tasks, dateString);
     }
 }

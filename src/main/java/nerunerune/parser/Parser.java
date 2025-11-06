@@ -1,7 +1,6 @@
 package nerunerune.parser;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import nerunerune.command.AddDeadlineCommand;
@@ -159,44 +158,55 @@ public class Parser {
         String extractedCommand = getCommand(userInput);
         String taskString = getArguments(userInput);
 
-        switch (extractedCommand) {
-        case "list":
-            CommandValidator.validateNoArguments(extractedCommand, taskString);
-            return new PrintTaskListCommand();
-        case "bye":
-            CommandValidator.validateNoArguments(extractedCommand, taskString);
-            return new ExitCommand();
-        case "command":
-            CommandValidator.validateNoArguments(extractedCommand, taskString);
-            return new ViewAllCommand();
-        case "find":
-            CommandValidator.validateCommandDetails(extractedCommand, taskString);
-            return new FindCommand(taskString);
-        case "schedule":
-            CommandValidator.validateCommandDetails(extractedCommand, taskString);
-            LocalDate scheduleDate = DateTimeParser.parseDateWithKeywords(taskString).toLocalDate();
-            return new ScheduleCommand(scheduleDate);
-        case "mark":
-            CommandValidator.validateCommandDetails(extractedCommand, taskString);
-            return new MarkCommand(taskString);
-        case "unmark":
-            CommandValidator.validateCommandDetails(extractedCommand, taskString);
-            return new UnmarkCommand(taskString);
-        case "todo":
-            CommandValidator.validateCommandDetails(extractedCommand, taskString);
-            return new AddTodoCommand(taskString);
-        case "deadline":
-            CommandValidator.validateCommandDetails(extractedCommand, taskString);
-            return new AddDeadlineCommand(taskString);
-        case "event":
-            CommandValidator.validateCommandDetails(extractedCommand, taskString);
-            return new AddEventCommand(taskString);
-        case "delete":
-            CommandValidator.validateCommandDetails(extractedCommand, taskString);
-            return new DeleteCommand(taskString);
-        default:
-            String unknownCommandMsg = "Sorry, I do not quite get that.\nType \"command\" to see all available command";
-            throw new NeruneruneException(unknownCommandMsg);
-        }
+        return switch (extractedCommand) {
+            case "list" -> {
+                CommandValidator.validateNoArguments(extractedCommand, taskString);
+                yield new PrintTaskListCommand();
+            }
+            case "bye" -> {
+                CommandValidator.validateNoArguments(extractedCommand, taskString);
+                yield new ExitCommand();
+            }
+            case "command" -> {
+                CommandValidator.validateNoArguments(extractedCommand, taskString);
+                yield new ViewAllCommand();
+            }
+            case "find" -> {
+                CommandValidator.validateCommandDetails(extractedCommand, taskString);
+                yield new FindCommand(taskString);
+            }
+            case "schedule" -> {
+                CommandValidator.validateCommandDetails(extractedCommand, taskString);
+                yield new ScheduleCommand(taskString);
+            }
+            case "mark" -> {
+                CommandValidator.validateCommandDetails(extractedCommand, taskString);
+                yield new MarkCommand(taskString);
+            }
+            case "unmark" -> {
+                CommandValidator.validateCommandDetails(extractedCommand, taskString);
+                yield new UnmarkCommand(taskString);
+            }
+            case "todo" -> {
+                CommandValidator.validateCommandDetails(extractedCommand, taskString);
+                yield new AddTodoCommand(taskString);
+            }
+            case "deadline" -> {
+                CommandValidator.validateCommandDetails(extractedCommand, taskString);
+                yield new AddDeadlineCommand(taskString);
+            }
+            case "event" -> {
+                CommandValidator.validateCommandDetails(extractedCommand, taskString);
+                yield new AddEventCommand(taskString);
+            }
+            case "delete" -> {
+                CommandValidator.validateCommandDetails(extractedCommand, taskString);
+                yield new DeleteCommand(taskString);
+            }
+            default -> {
+                String unknownCommandMsg = "Sorry, I do not quite get that.\nType \"command\" to see all available command";
+                throw new NeruneruneException(unknownCommandMsg);
+            }
+        };
     }
 }

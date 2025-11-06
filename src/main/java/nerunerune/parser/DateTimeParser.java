@@ -42,11 +42,13 @@ public class DateTimeParser {
             throw new NeruneruneException("""
                     Invalid date and time detected.
                     
-                    Date must be within range
+                    Requirements:
+                    - Date must be within valid range
+                    - Hours must be between 00 and 23
+                    - Minutes must be between 00 and 59
+                    - Time format must be 24-hour (HHmm)
                     
-                    Hours must be between 00 and 23, and minutes between 00 and 59.
-                    
-                    Note: time to be in 24-hour HHmm format.""");
+                    Example: 01-01-2025 1830""");
 
         }
     }
@@ -108,21 +110,14 @@ public class DateTimeParser {
      */
     public static LocalDateTime parseDateWithKeywords(String dateString) throws NeruneruneException {
         try {
-            switch (dateString.toLowerCase()) {
-            case "today":
-                return LocalDate.now().atStartOfDay();
-            case "tomorrow":
-                return LocalDate.now().plusDays(1).atStartOfDay();
-            case "yesterday":
-                return LocalDate.now().minusDays(1).atStartOfDay();
-            case "next week":
-                return LocalDate.now().plusWeeks(1).atStartOfDay();
-            case "next month":
-                return LocalDate.now().plusMonths(1).atStartOfDay();
-            default:
-//                return LocalDate.parse(dateString, DATE_ONLY_FORMATTER).atStartOfDay();
-                return parseDateTime(dateString);
-            }
+            return switch (dateString.toLowerCase()) {
+                case "today" -> LocalDate.now().atStartOfDay();
+                case "tomorrow" -> LocalDate.now().plusDays(1).atStartOfDay();
+                case "yesterday" -> LocalDate.now().minusDays(1).atStartOfDay();
+                case "next week" -> LocalDate.now().plusWeeks(1).atStartOfDay();
+                case "next month" -> LocalDate.now().plusMonths(1).atStartOfDay();
+                default -> parseDateTime(dateString);
+            };
         } catch (DateTimeParseException e) {
             throw new NeruneruneException("Invalid date format! Use DD-MM-YYYY or today/tomorrow/yesterday");
         }

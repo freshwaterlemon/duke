@@ -2,56 +2,84 @@ package nerunerune.ui;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import nerunerune.command.Command;
 import nerunerune.exception.NeruneruneException;
-import nerunerune.parser.DateTimeParser;
 import nerunerune.storage.Storage;
-import nerunerune.task.Deadline;
-import nerunerune.task.Event;
 import nerunerune.task.Task;
 import nerunerune.tasklist.TaskList;
 
 /**
- * Handles user interface display functions such as printing messages,
- * task lists, start/end greetings, and user commands guide.
+ * Handles user interface display functions for the Nerunerune task manager.
+ * <p>
+ * Responsible for displaying messages, task lists, schedules, start/end greetings,
+ * and command guides. Coordinates with ScheduleDisplay for schedule-related operations.
+ * Also captures command output for GUI display while maintaining console visibility.
  */
 public class Ui {
     private static final String BOT_NAME = "Nerunerune";
     private static final String USER_GUIDE_MSG = """
-            List of Task Commands Available:
+            Nerunerune Commands
             
-            1.  Type 'command' to see all commands available.
-            2.  Type 'list' to see all your tasks.
-            3.  Use 'find <keyword>' to search for tasks containing a keyword.
-            4.  Use 'todo <task>' to add a simple task.
-            5.  Use 'deadline <task> /by <date/time>' to add a task with a deadline.
-                  - Date/time format: DD-MM-YYYY HHmm (e.g. 01-01-2025 1800)
-                  - Shortcuts: deadline <task> /by <today>, <tomorrow>, <next week>, <next month>
-            6.  Use 'event <task> /from <start date/time> /to <end date/time>' to add an event.
-                  - Date/time format: DD-MM-YYYY HHmm (e.g. 01-01-2025 1800)
-                  - Note: Events that overlap with existing events cannot be added.
-            7.  Use 'mark <task>' or 'mark <task number>' to mark a task as done.
-                  - Use 'mark backdated' to mark all tasks with passed deadlines/events as done.
-            8.  Use 'unmark <task>' or 'unmark <task number>' to unmark a task as not done.
-            9.  Use 'delete <task>' or 'delete <task number>' to delete a task from list and storage.
-                  - Use 'delete all done' to delete all completed tasks at once.
-            10. Use 'schedule <date>' to view tasks scheduled for a specific date.
-                  - Date format: DD-MM-YYYY (e.g. 26-10-2025)
-                  - Shortcuts: schedule <today>, <tomorrow>, <yesterday>
-            11. Type 'bye' to exit the chat.
+            list - Show all tasks
+            find <keyword> - Search tasks
+            schedule <date> - View tasks for date
+              • Dates: DD-MM-YYYY, today, tomorrow, yesterday, next week, next month
+            
+            todo <task> - Add simple task
+            deadline <task> /by <date> - Add deadline
+              • Dates: DD-MM-YYYY HHmm or today, tomorrow, next week, next month
+              • Example: deadline report /by tomorrow
+            event <task> /from <date> /to <date> - Add event
+              • Format: DD-MM-YYYY HHmm
+              • Example: event meeting /from 01-01-2025 1400 /to 01-01-2025 1600
+            
+            mark <task> - Mark complete (task name only)
+            unmark <task> - Mark incomplete (task name only)
+            delete <task> - Delete task (task name only)
+            
+            mark backdated - Mark all overdue as complete
+            delete all done - Delete all completed
+            
+            command - Show help
+            bye - Exit
             """;
+
+
+    private final ScheduleDisplay scheduleDisplay;
+
+    /**
+     * Constructs an Ui instance and initializes the ScheduleDisplay helper.
+     */
+    public Ui() {
+        this.scheduleDisplay = new ScheduleDisplay(this);
+    }
 
     /**
      * Gets the starting greeting message for GUI display.
+     * <p>
+     * This message is shown when the application starts, welcoming the user
+     * and prompting them to view available commands.
      *
-     * @return The greeting message as a String
+     * @return the greeting message as a String
      */
     public static String getStartMsg() {
         return String.format("Hello! I'm %s, here to help you manage your tasks.", BOT_NAME)
                 + "\n\nType \"command\" to see all available command";
+    }
+
+    /**
+     * Displays the schedule for a given date or date range.
+     * <p>
+     * Delegates to ScheduleDisplay to handle both single dates and date ranges.
+     *
+     * @param tasks      the TaskList containing all tasks
+     * @param dateString the date string (e.g., "today", "next week", "25-10-2025")
+     * @throws NeruneruneException if the date format is invalid or cannot be parsed
+     */
+    public void showSchedule(TaskList tasks, String dateString) throws NeruneruneException {
+        scheduleDisplay.showSchedule(tasks, dateString);
     }
 
     /**
@@ -63,7 +91,8 @@ public class Ui {
 
     /**
      * Prints all tasks in the given task list, formatted with index and indentation.
-     * If the list is empty, prints an appropriate message.
+     * <p>
+     * If the list is empty, displays an appropriate message instead.
      *
      * @param taskList the list of tasks to display
      */
@@ -80,7 +109,10 @@ public class Ui {
     }
 
     /**
-     * Returns the user guide message listing commands available.
+     * Returns the user guide message listing all available commands.
+     * <p>
+     * This message includes descriptions and usage examples for all supported commands
+     * such as add, delete, mark, schedule, find, etc.
      *
      * @return the user guide message string
      */
@@ -97,98 +129,14 @@ public class Ui {
         System.out.println(message);
     }
 
-    /**
-     * Displays the schedule of tasks for a specific date, grouped by task type.
-     * Tasks are categorized into "Deadlines" and "Events" sections, with each section
-     * numbered independently.
-     * Shows all tasks (deadlines and events) that occur on the given date,
-     * categorized, numbered and formatted for readability.
-     * If no tasks are scheduled, displays an appropriate message.
-     *
-     * @param tasks the TaskList containing all tasks to check
-     * @param date  the date for which to display the schedule
-     */
-    public void showSchedule(TaskList tasks, LocalDate date) {
-        printMessage("Schedule for " + DateTimeParser.formatForSchedule(date) + ":");
-
-        ArrayList<Task> deadlines = new ArrayList<>();
-        ArrayList<Task> events = new ArrayList<>();
-
-        filterAndGroupTasks(tasks, date, deadlines, events);
-        displayScheduleContent(deadlines, events);
-
-    }
-
-    /**
-     * Filters tasks by the specified date and groups them by type.
-     * Iterates through all tasks and categorizes those occurring on the given date
-     * into separate lists for Deadlines and Events. Todo tasks are excluded as they
-     * have no specific date.
-     *
-     * @param tasks     the TaskList containing all tasks
-     * @param date      the date to filter tasks by
-     * @param deadlines the list to populate with Deadline tasks (modified by this method)
-     * @param events    the list to populate with Event tasks (modified by this method)
-     */
-    private void filterAndGroupTasks(TaskList tasks, LocalDate date,
-                                     ArrayList<Task> deadlines, ArrayList<Task> events) {
-        for (Task task : tasks.getTaskList()) {
-            if (!task.occursOn(date)) {
-                continue;
-            }
-
-            if (task instanceof Deadline) {
-                deadlines.add(task);
-            } else if (task instanceof Event) {
-                events.add(task);
-            }
-        }
-    }
-
-    /**
-     * Displays the formatted schedule content for the filtered tasks.
-     * Shows separate sections for Deadlines and Events, with a total count at the bottom.
-     * If both lists are empty, displays a message indicating no tasks are scheduled.
-     *
-     * @param deadlines the list of Deadline tasks to display
-     * @param events    the list of Event tasks to display
-     */
-    private void displayScheduleContent(ArrayList<Task> deadlines, ArrayList<Task> events) {
-        if (deadlines.isEmpty() && events.isEmpty()) {
-            printMessage("\nNo tasks scheduled for this date.");
-            return;
-        }
-
-        displayTaskCategory("Deadlines", deadlines);
-        displayTaskCategory("Events", events);
-        printMessage("Total: " + (deadlines.size() + events.size()) + " task(s)");
-    }
-
-    /**
-     * Displays a category of tasks with a header and numbered list.
-     * If the task list is empty, the category is not displayed.
-     * Each task is numbered starting from 1 and indented for readability.
-     *
-     * @param categoryName the name of the category (e.g., "Deadlines", "Events")
-     * @param tasks        the list of tasks to display in this category
-     */
-    private void displayTaskCategory(String categoryName, ArrayList<Task> tasks) {
-        if (tasks.isEmpty()) {
-            return;
-        }
-
-        printMessage((categoryName + ":").indent(4));
-        for (int i = 0; i < tasks.size(); i++) {
-            printMessage(((i + 1) + ". " + tasks.get(i)).indent(8));
-        }
-    }
 
     /**
      * Displays the list of tasks that match the search criteria.
-     * If the list is empty, displays a "no matches found" message.
-     * Otherwise, displays each matching task with its index number.
+     * <p>
+     * If the list is empty, displays a "no matching tasks found" message.
+     * Otherwise, displays each matching task with its index number starting from 1.
      *
-     * @param matchingTasks The list of tasks to display. Can be empty.
+     * @param matchingTasks the list of tasks to display; can be empty
      */
     public void showMatchingTasks(ArrayList<Task> matchingTasks) {
         if (matchingTasks.isEmpty()) {
@@ -203,17 +151,16 @@ public class Ui {
 
     /**
      * Executes a command and captures its output as a String for GUI display.
+     * <p>
      * The output is simultaneously written to both the console (for CLI visibility)
      * and captured for GUI display, ensuring both interfaces show the same information.
-     * <p>
-     * This method temporarily redirects "System.out" to a "tee" stream that duplicates
-     * all output to both the original console and an internal capture buffer.
-     * <p>
+     * This method temporarily redirects {@code System.out} to a "tee" stream that
+     * duplicates all output to both the original console and an internal capture buffer.
      *
-     * @param command  The command to execute
-     * @param taskList The task list to operate on
-     * @param storage  The storage handler for persistence
-     * @return The captured output as a String, trimmed of leading/trailing whitespace
+     * @param command  the command to execute
+     * @param taskList the task list to operate on
+     * @param storage  the storage handler for persistence
+     * @return the captured output as a String, trimmed of leading/trailing whitespace
      * @throws NeruneruneException if command execution fails
      */
     // implemented with help of AI
@@ -248,6 +195,5 @@ public class Ui {
             System.setOut(originalOut);
         }
     }
-
 
 }
