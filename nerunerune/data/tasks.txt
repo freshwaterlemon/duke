@@ -10,3 +10,5 @@ D | 1 | overdue task | Aug 03 2025 0000
 D | 1 | overdue task 2 | Jul 02 2025 0000
 E | 0 | team meeting | Dec 18 2025 1400 | Dec 18 2025 1600
 E | 1 | project meeting | Nov 06 2025 1900 | Nov 06 2025 2300
+T | 0 | read new book
+D | 0 | return finished reading book | Nov 13 2025 0000
