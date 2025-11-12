@@ -3,6 +3,16 @@
 This is a project template for a greenfield Java project. It's named after the Java mascot _Duke_. Given below are
 instructions on how to use it.
 
+## Documentation
+
+**[User Guide](docs/README.md)** - Learn how to use all features
+
+## Quick Start
+
+1. Download the latest release
+2. Run `java -jar nerunerune.jar`
+3. See the **[User Guide](docs/README.md)** for detailed commands
+
 ## Setting up in Intellij
 
 Prerequisites: JDK 17, update Intellij to the most recent version.
